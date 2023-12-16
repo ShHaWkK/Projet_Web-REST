@@ -44,8 +44,11 @@ function exit_with_content($content = null, $code = 200) {
 // Composant principal du controlleur: cette fonction agit comme un routeur en redirigeant les requêtes vers le bon controlleur
 function controller($uri) {
     switch($uri[2]) {
-        case 'Service':
-            $controller = new GlobalController();//renvoie a l'utilisation de la class GlobalController fonction de redirection 
+        case 'User':
+                userController($uri);
+            break;
+            case 'Appartement':
+                appartementController($uri);
             break;
         default:
             // Si la ressource demandée n'existe pas, alors on renvoie une erreur 404
