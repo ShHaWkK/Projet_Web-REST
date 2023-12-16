@@ -1,12 +1,18 @@
-# Correction
+# Projet Dev Web API
+Création d'une api
+## Participants :
+- Alexandre Helleux     (AlexandreDjazz)
+- Alexandre Uzan        (ShHaWkK)
+- Marc Lecomte          (Spatulox)
 
-Ci-jointe la correction pour l'exercice sur les API qui consistait en faire une APi pour les To-Dos.
+### Sujet :
+Création d'une api de gestion d'appartement
 
-L'implémentation représente une façon de répondre aux consignes avec un bon comprimis entre la simplicité et la rpopreté, si l'on s'en tient à ce que l'on a appris jusqu'à maintenant.
 
-Cette implémentation respècte le modèle MVC dans la mesure où il n'y a pas de "vue" étant donné qu'il s'agit d'un API simple.
 
-## Solution
+<hr>
+
+## Aide
 
 La solution se sépare en plusieur parties :
 
