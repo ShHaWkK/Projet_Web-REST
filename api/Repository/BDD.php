@@ -1,29 +1,35 @@
 <?php
-if ($_SESSION['role'] == 5)
-{
-	$dbRequest = 'SELECT IDuser, idavatar, nom, prenom, inscription, role, theme, num_telephone, newsletter FROM UTILISATEUR WHERE email= :email AND password= :password';
+
+include_once './Service/globalFunctions.php';
+
+function connectBDD(){
+	try {
+	    $db = new PDO(
+	        'pgsql:host=restpastropapi-database-1;
+	        port=5432;
+	        dbname=apiDev_db;
+	        user=apiDev;
+	        password=password',
+	        null,
+	        null,
+	        array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)
+	    );
+	} catch (Exception $e) {
+
+		die(exit_with_message("Connection BDD error"));
+	    //die("{'Erreur PDO' :" . "'" . $e->getMessage() . "'}");
+	}
+
+	return $db;
 }
+
+
+
 
 
 //var_dump($_SESSION);
 
-$result = $db->prepare($dbRequest);
 
-$result->execute([
-	'email' => $_SESSION['email'],
-	'password' => hash('sha256', $_SESSION['pwd'])
-]);
-
-$reponse = $result->fetch();
-
-if ($reponse == false)
-{
-	$msg = 'Impossible de se connecter à la base de donnee';
-	header('location: Accueil.php?message=' . $msg);
-	exit();
-}
-
-$IDuser = $reponse['IDuser'];
 
 
 ?>

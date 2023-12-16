@@ -1,5 +1,6 @@
 <?php
 #include_once './Controller/TodoController.php';
+include_once './Repository/BDD.php';
 
 // Skipper les warnings, pour la production (vos exceptions devront être gérées proprement)
 error_reporting(E_ERROR | E_PARSE);
@@ -17,8 +18,10 @@ $uri = explode( '/', $uri ); // On obtient un tableau de la forme ['index.php', 
 
 // Si on a moins de 3 éléments dans l'URI, c'est que l'on est sur l'index de l'API
 if (sizeof($uri) < 3) {
-    header("HTTP/1.1 200 OK");
-    echo '{"message": "Welcome to the API"}';
+    $tmp = selectDB("USERS", "id_users");
+    var_dump($tmp);
+    // header("HTTP/1.1 200 OK");
+    // echo '{"message": "Welcome to the API"}';
     exit();
 }
 
