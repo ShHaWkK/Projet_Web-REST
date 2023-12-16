@@ -1,6 +1,9 @@
 <?php
 include_once './Service/globalFunctions.php';
 include_once './Repository/BDD.php';
+include_once './Controller/appartementController.php';
+include_once './Controller/userController.php';
+
 
 // Skipper les warnings, pour la production (vos exceptions devront être gérées proprement)
 error_reporting(E_ERROR | E_PARSE);
@@ -47,7 +50,7 @@ function controller($uri) {
         case 'user':
                 userController($uri);
             break;
-            case 'appartement':
+        case 'appartement':
                 appartementController($uri);
             break;
         default:
