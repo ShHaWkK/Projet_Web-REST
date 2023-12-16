@@ -2,7 +2,40 @@
 
 include_once './Service/globalFunctions.php';
 
+function checkData($table = -10, $columnArray = -10, $columData = -10, $condition = -10){
+	$bool = false;
 
+	$sentence = "Please specifie ";
+	$addSentence = "";
+	if (empty($table)){
+		$bool = true;
+		$sentence .= "the table, ";
+	}
+	if (empty($columnArray)){
+		$bool = true;
+		$sentence .= "the colums, ";
+	}
+	if (empty($columData)){
+		$bool = true;
+		$sentence .= "the data, ";
+	}
+
+	if (empty($condition))
+	{
+		$bool = true;
+		$sentence .= "the condition, ";
+		$addSentence .= " To apply no condition, plz give -1.";
+	}
+
+	if ($bool == true){
+		$sentence .= "(to execute the function, each args has to be not null).". $addSentence;
+		exit_with_message($sentence);
+	}
+
+	if (!checkMsg($condition, "=") && $condition != -1 && $condition != -10){
+		exit_with_message('Plz enter a valid condition like : columnName=data'. $addSentence);
+	}
+}
 
 # -------------------------------------------------------------- #
 
