@@ -149,7 +149,7 @@ function insertDB($table, $columnArray, $columData)
 
 # -------------------------------------------------------------- #
 
-function updateDB($table, $columnArray, $columData, $condition)
+function updateDB($table, $columnArray, $columData, $condition = null)
 {
 	// -10 no condition enter by the user
 	// -1 : the user want no condition
