@@ -1,5 +1,6 @@
 <?php
 #include_once './Controller/TodoController.php';
+include_once './Repository/BDD.php';
 
 // Skipper les warnings, pour la production (vos exceptions devront être gérées proprement)
 error_reporting(E_ERROR | E_PARSE);
