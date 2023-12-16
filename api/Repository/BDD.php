@@ -55,6 +55,7 @@ function selectDB($table, $colums){
 	    exit_with_message("PDO error :" . $e->getMessage());
 	}
 
+	return true;
 }
 
 
@@ -89,8 +90,47 @@ function insertDB($table, $columnArray, $columData)
 
 	    exit_with_message("PDO error :" . $e->getMessage());
 	}
+
+	return true;
 }
 
+
+function updateDB($table, $columnArray, $columData, $condition)
+{
+
+	if (count($columnArray) != count($columData)){
+		exit_with_message('ERROR : Colums and data must have the same length');
+	}
+
+	$db = connectDB();
+
+	$updatedData = $columnArray[0] . "=" . $columData[0];
+	for ($i=1; $i < count($columnArray) ; $i++) {
+		$updatedData .= ", " . $columnArray[$i] . "=" . $columData[$i];
+	}
+
+	var_dump($updatedData);
+
+	$dbRequest = 'UPDATE '. $table .' SET ' . $updatedData .'  WHERE ' . $condition ;
+
+	try{
+		$result = $db->prepare($dbRequest);
+		$result->execute();
+
+		return false;
+	}
+	catch (PDOException $e)
+	{
+		if (checkError($e->getMessage(), $wordToSearch = "Undefined column"))
+		{
+			exit_with_message(explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist");
+		}
+
+	    exit_with_message("PDO error :" . $e->getMessage());
+	}
+	
+	return true;
+}
 
 
 //var_dump($_SESSION);
