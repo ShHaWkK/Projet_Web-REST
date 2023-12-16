@@ -49,8 +49,8 @@ function controller($uri) {
         case 'user':
             userController($uri);
             break;
-        case 'appartement':
-            appartementController($uri);
+        case 'apartment':
+            apartmentController($uri);
             break;
 
         default:
