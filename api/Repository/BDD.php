@@ -50,12 +50,45 @@ function selectDB($table, $colums){
 		if (checkError($e->getMessage(), $wordToSearch = "Undefined column"))
 		{
 			exit_with_message(explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist");
-			exit();
 		}
 
 	    exit_with_message("PDO error :" . $e->getMessage());
 	}
 
+}
+
+
+function insertDB($table, $columnArray, $columData)
+{
+	$db = connectDB();
+
+	$colums = $columnArray[0];
+	for ($i=1; $i < count($columnArray) ; $i++) { 
+		$colums .= ", " . $columnArray[$i];
+	}
+
+	$data = $columData[0];
+	for ($i=1; $i < count($columData) ; $i++) { 
+		$data .= ", " . $columData[$i];
+	}
+
+	$dbRequest = 'INSERT INTO '. $table .'(' . $colums . ') VALUES ('. $data . ')';
+
+	try{
+		$result = $db->prepare($dbRequest);
+		$result->execute();
+
+		return false;
+	}
+	catch (PDOException $e)
+	{
+		if (checkError($e->getMessage(), $wordToSearch = "Undefined column"))
+		{
+			exit_with_message(explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist");
+		}
+
+	    exit_with_message("PDO error :" . $e->getMessage());
+	}
 }
 
 
