@@ -2,6 +2,10 @@
 
 include_once './Service/globalFunctions.php';
 
+
+
+# -------------------------------------------------------------- #
+
 function connectDB(){
 	try {
 	    $db = new PDO(
@@ -16,20 +20,31 @@ function connectDB(){
 	    );
 	} catch (Exception $e) {
 
-		die(exit_with_message("Connection BDD error"));
-	    //die("{'Erreur PDO' :" . "'" . $e->getMessage() . "'}");
+		die(exit_with_message("ERROR : Connection BDD error"));
 	}
 
 	return $db;
 }
 
+# -------------------------------------------------------------- #
 
-function selectDB($table, $colums){
+function selectDB($table, $colums, $condition = -1){
+	// -1 : the user want no condition or no condition entered by the user.
 	// $colums must be like that : $columns = "idusers, role"
+
+	checkData($table, $colums, -10, $condition);
 
 	$db = connectDB();
 
-	$dbRequest = 'SELECT '. $colums .' FROM '. $table;
+	if (empty($condition) || $condition == -1){
+		$dbRequest = 'SELECT '. $colums .' FROM '. $table;
+	}
+	else{
+		if(!checkMsg($condition, '=')){
+			exit_with_message('Plz enter a valid condition like : columnName=data');
+		}
+		$dbRequest = 'SELECT '. $colums .' FROM '. $table . ' WHERE ' . $condition;
+	}
 
 	try{
 		$result = $db->prepare($dbRequest);
@@ -38,16 +53,13 @@ function selectDB($table, $colums){
 		$reponse = $result->fetchAll();
 		if ($reponse == false)
 		{
-
 			exit_with_message("ERROR : Impossible to select data");
-			//header('location: Accueil.php?message=' . $msg);
-			exit();
 		}
 		return $reponse;
 	}
 	catch (PDOException $e)
 	{
-		if (checkError($e->getMessage(), $wordToSearch = "Undefined column"))
+		if (checkMsg($e->getMessage(), $wordToSearch = "Undefined column"))
 		{
 			exit_with_message(explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist");
 		}
@@ -58,9 +70,15 @@ function selectDB($table, $colums){
 	return true;
 }
 
+# -------------------------------------------------------------- #
 
 function insertDB($table, $columnArray, $columData)
 {
+	// -10 no condition enter by the user
+	// -1 : the user want no condition
+
+	checkData($table, $columnArray, $columData, -10);
+
 	$db = connectDB();
 
 	$colums = $columnArray[0];
@@ -83,7 +101,7 @@ function insertDB($table, $columnArray, $columData)
 	}
 	catch (PDOException $e)
 	{
-		if (checkError($e->getMessage(), $wordToSearch = "Undefined column"))
+		if (checkMsg($e->getMessage(), $wordToSearch = "Undefined column"))
 		{
 			exit_with_message(explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist");
 		}
@@ -94,9 +112,14 @@ function insertDB($table, $columnArray, $columData)
 	return true;
 }
 
+# -------------------------------------------------------------- #
 
 function updateDB($table, $columnArray, $columData, $condition)
 {
+	// -10 no condition enter by the user
+	// -1 : the user want no condition
+
+	checkData($table, $columnArray, $columData, $condition);
 
 	if (count($columnArray) != count($columData)){
 		exit_with_message('ERROR : Colums and data must have the same length');
@@ -109,9 +132,13 @@ function updateDB($table, $columnArray, $columData, $condition)
 		$updatedData .= ", " . $columnArray[$i] . "=" . $columData[$i];
 	}
 
-	var_dump($updatedData);
+	if ($condition == -1){
+		$dbRequest = 'UPDATE '. $table .' SET ' . $updatedData;
+	}
+	else{
+		$dbRequest = 'UPDATE '. $table .' SET ' . $updatedData .'  WHERE ' . $condition ;
+	}
 
-	$dbRequest = 'UPDATE '. $table .' SET ' . $updatedData .'  WHERE ' . $condition ;
 
 	try{
 		$result = $db->prepare($dbRequest);
@@ -121,16 +148,19 @@ function updateDB($table, $columnArray, $columData, $condition)
 	}
 	catch (PDOException $e)
 	{
-		if (checkError($e->getMessage(), $wordToSearch = "Undefined column"))
+		if (checkMsg($e->getMessage(), $wordToSearch = "Undefined column"))
 		{
 			exit_with_message(explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist");
 		}
 
-	    exit_with_message("PDO error :" . $e->getMessage());
+	    exit_with_message("PDO error :" . explode("DETAIL: ", $e->getMessage())[1]);
 	}
 	
 	return true;
 }
+
+# -------------------------------------------------------------- #
+
 
 
 //var_dump($_SESSION);
