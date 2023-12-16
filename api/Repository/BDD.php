@@ -67,15 +67,17 @@ function selectDB($table, $colums, $condition = -1){
 
 	checkData($table, $colums, -10, $condition);
 
+
 	$db = connectDB();
 
-	if (empty($condition) || $condition == -1){
+	if ($condition == -1){
 		$dbRequest = 'SELECT '. $colums .' FROM '. $table;
 	}
 	else{
 		if(!checkMsg($condition, '=')){
 			exit_with_message('Plz enter a valid condition like : columnName=data');
 		}
+
 		$dbRequest = 'SELECT '. $colums .' FROM '. $table . ' WHERE ' . $condition;
 	}
 
@@ -94,12 +96,12 @@ function selectDB($table, $colums, $condition = -1){
 	{
 		if (checkMsg($e->getMessage(), $wordToSearch = "Undefined column"))
 		{
+
 			exit_with_message(explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist");
 		}
 
 	    exit_with_message("PDO error :" . $e->getMessage());
 	}
-
 	return true;
 }
 
@@ -225,10 +227,6 @@ function deleteDB($table, $condition)
 	
 	return true;
 }
-
-
-//var_dump($_SESSION);
-
 
 
 
