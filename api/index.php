@@ -44,10 +44,10 @@ function exit_with_content($content = null, $code = 200) {
 // Composant principal du controlleur: cette fonction agit comme un routeur en redirigeant les requêtes vers le bon controlleur
 function controller($uri) {
     switch($uri[2]) {
-        case 'User':
+        case 'user':
                 userController($uri);
             break;
-            case 'Appartement':
+            case 'appartement':
                 appartementController($uri);
             break;
         default:
