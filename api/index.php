@@ -1,6 +1,9 @@
 <?php
 include_once './Service/globalFunctions.php';
 include_once './Repository/BDD.php';
+include_once './Controller/appartementController.php';
+include_once './Controller/userController.php';
+
 
 // Skipper les warnings, pour la production (vos exceptions devront être gérées proprement)
 error_reporting(E_ERROR | E_PARSE);
@@ -44,10 +47,10 @@ function exit_with_content($content = null, $code = 200) {
 // Composant principal du controlleur: cette fonction agit comme un routeur en redirigeant les requêtes vers le bon controlleur
 function controller($uri) {
     switch($uri[2]) {
-        case 'User':
+        case 'user':
                 userController($uri);
             break;
-            case 'Appartement':
+        case 'appartement':
                 appartementController($uri);
             break;
         default:
