@@ -194,6 +194,37 @@ function updateDB($table, $columnArray, $columData, $condition)
 
 # -------------------------------------------------------------- #
 
+function deleteDB($table, $condition)
+{
+	checkData($table, -10, -10, $condition);
+
+	$db = connectDB();
+
+	if($condition == -1){
+		$dbRequest = 'DELETE FROM '. $table;
+	}
+	else{
+		$dbRequest = 'DELETE FROM '. $table .' WHERE ' . $condition ;
+	}
+
+	try{
+		$result = $db->prepare($dbRequest);
+		$result->execute();
+
+		return false;
+	}
+	catch (PDOException $e)
+	{
+		if (checkMsg($e->getMessage(), $wordToSearch = "Undefined column"))
+		{
+			exit_with_message(explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist");
+		}
+
+	    exit_with_message("PDO error :" . explode("DETAIL: ", $e->getMessage())[1]);
+	}
+	
+	return true;
+}
 
 
 //var_dump($_SESSION);
