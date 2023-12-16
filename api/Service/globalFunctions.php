@@ -1,11 +1,14 @@
 <?php
-function checkError($msg, $wordToSearch = "ERROR : "){
-	if (strpos($msg, $wordToSearch) !== false){
+function checkError($msg){
+	if (strpos(strtolower($msg), "error") !== false){
 		return true;
 	}
 
 	return false;
 }
+
+# -------------------------------------------------------------- #
+
 
 
 
