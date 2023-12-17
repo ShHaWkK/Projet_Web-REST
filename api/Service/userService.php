@@ -1,6 +1,6 @@
 <?php
-include_once '../Repository/userRepository.php'; 
-
+include_once '/../Repository/userRepository.php'; 
+include_once '/../Models/userModel.php';
 
 class UserService {
     private $userRepository;
@@ -10,7 +10,7 @@ class UserService {
     */
 
     public function __construct(UserRepository $userRepository) {
-        $this->userRepository = $UserRepository();
+        $this->userRepository = $userRepository();
     }
 
     /*
@@ -47,7 +47,7 @@ class UserService {
     }
 
     /*
-     *  Met à jour le role d'un utilisateur
+     *  Met à jour le rôle d'un utilisateur
     */
 
     public function updateUserRole($id, $newRole) {
@@ -63,14 +63,25 @@ class UserService {
     }
 
     /*
-     *  Vérifie si le role est valide
+     *  Vérifie si le rôle est valide
     */
-    
-    public function updateUserRole($id, $newRole) {
-        if (!$this->isValidRole($newRole)) {
+
+    public function createUserWithRole($role, $apiKey) {
+        if (!$this->isValidRole($role)) {
             throw new Exception("Invalid role specified.");
         }
-        return $this->userRepository->updateRole($id, $newRole);
+        $newUser = new UserModel(null, $role, $apiKey); 
+        return $this->userRepository->createUser($newUser);
+    }
+
+    
+    public function updateUserWithRole($id_users, $role, $apiKey) {
+        // Même validation pour le rôle
+        if (!$this->isValidRole($role)) {
+            throw new Exception("Invalid role specified.");
+        }
+        $updatedUser = new UserModel($id_users, $role, $apiKey);
+        return $this->userRepository->updateUser($updatedUser);
     }
 
     /*
@@ -78,7 +89,8 @@ class UserService {
     */
 
     public function isValidRole($role) {
-        return in_array($role, ['admin', 'user']);
+        $validRoles = [1 => 'admin', 2 => 'modo', 3 => 'propriétaire', 4 => 'client'];
+        return array_key_exists($role, $validRoles);
     }
     /*
     *  La clé API est un hash md5 de l'identifiant de l'utilisateur
@@ -87,38 +99,4 @@ class UserService {
         return preg_match('/^[a-zA-Z0-9]{32}$/', $apiKey);
     }
 }
-
-/*
-<?php
-
-include_once './Repository/UserRepository.php';
-
-class UserService {
-    private $userRepository;
-
-    public function __construct() {
-        $this->userRepository = new UserRepository();
-    }
-
-    public function getAllUsers() {
-        return $this->userRepository->getUsers();
-    }
-
-    public function getUserById($id) {
-        return $this->userRepository->getUser($id);
-    }
-
-    public function createUser($id_users, $role, $apiKey) {
-        $newUser = new UserModel($id_users, $role, $apiKey);
-        return $this->userRepository->createUser($newUser);
-    }
-
-    public function deleteUser($id) {
-        $this->userRepository->deleteUser($id);
-    }
-
-    public function updateUser($id_users, $role, $apiKey) {
-        $newUser = new UserModel($id_users, $role, $apiKey);
-        return $this->userRepository->updateUser($newUser);
-    }
-*/
+?>
