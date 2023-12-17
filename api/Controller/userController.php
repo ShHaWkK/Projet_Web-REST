@@ -1,5 +1,5 @@
 <?php
-include_once '../service/UserService.php';
+include_once '../Service/UserService.php';
 include_once 'models/UserModel.php';
 include_once 'exceptions.php';
 
