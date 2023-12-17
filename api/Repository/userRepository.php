@@ -36,7 +36,7 @@ class UserRepository {
 
         $user = selectDB("USERS", "*", "id_users=".$id);
 
-        return new UserModel($user[0]['id_users'], $user[0]['role'], $user[0]['apiKey'];
+         return new UserModel($user[0]['id_users'], $user[0]['role'], $user[0]['apiKey']);
     }
 
     public function deleteUser($id){
