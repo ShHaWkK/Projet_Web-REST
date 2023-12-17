@@ -1,7 +1,7 @@
 <?php
 include_once './BDD.php';
-include_once '../Models/userModel.php';
-include_once '../exception.php';
+include_once './Models/userModel.php';
+include_once './exception.php';
 
 class UserRepository {
     private $connection = null;

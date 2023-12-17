@@ -1,11 +1,14 @@
 <?php
-include_once '../Service/userService.php';
-include_once '../Models/userModel.php';
-include_once '../exceptions.php';
+include_once './Service/userService.php';
+include_once './Models/userModel.php';
+include_once './exceptions.php';
+
+
 
 function userController($uri) {
-    $userModel = new UserModel();
+    $userModel = new UserModel("1", "1", "apiKey");
 
+    /*
     switch ($_SERVER['REQUEST_METHOD']) {
         case 'GET':
             // Gestion des requêtes GET pour les utilisateurs
@@ -67,6 +70,7 @@ function userController($uri) {
             // Gestion des requêtes OPTIONS pour le CORS
             header("HTTP/1.1 200 OK");
             exit();
-    }
+    }*/
 }
+
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-include_once '../Repository/BDD.php';
+include_once './Repository/BDD.php';
 
 class UserModel {
     public $id_users;
@@ -13,6 +13,7 @@ class UserModel {
         $this->apiKey = $apiKey;
     }
 
+    /*
     public function save() {
         if ($this->id_users === null) {
             $columnArray = ['role'];
@@ -41,6 +42,7 @@ class UserModel {
         $condition = "id_users={$id}";
         return selectDB('users', '*', $condition);
     }
+    */
 }
 
 ?>
