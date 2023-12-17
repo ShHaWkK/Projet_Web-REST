@@ -7,7 +7,7 @@ class UserModel {
     public $apiKey;
     
     public
-    function __construct($id_users, $role, $apiKey)
+    function __construct($id_users, $role, $apiKey = null)
     {       
         $this->id_users = $id_users;
         $this->role = $role;
