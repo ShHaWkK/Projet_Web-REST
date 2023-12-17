@@ -1,7 +1,7 @@
 <?php
-include_once 'services/UserService.php';
+include_once '../service/UserService.php';
 include_once 'models/UserModel.php';
-include_once 'exceptions/HTTPException.php';
+include_once 'exceptions.php';
 
 function userController($uri) {
     $userModel = new UserModel();
