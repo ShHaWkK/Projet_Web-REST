@@ -1,6 +1,6 @@
 <?php
 include_once '../Repository/apartmentRepository.php'; 
-
+include_once '../Models/apartmentModel.php';
 
 class AppartmentService {
     private $apartmentRepository;
@@ -22,14 +22,14 @@ class AppartmentService {
 
 
     //Créer un appartement
-     function addApartment($id_apartement, $place, $address, $complement_address, $availability, $price_night, $area, $id_users) {
-        $newApartment = new ApartementModelApartementModel( $id_apartement, $place, $address, $complement_address, $availability, $price_night, $area);
+    public function addApartment($id_appartement, $place, $address, $complement_address, $availability, $price_night, $area, $id_users) {
+        $newApartment = new ApartmentModel(null, $place, $address, $complement_address, $availability, $price_night, $area, $id_users, $id_appartement);
         return $this->apartmentRepository->addApartment($newUser);
     }
 
 
     //Met à jour un appartement
-    public function updateApartment(($id_apartement, $place, $address, $complement_address, $availability, $price_night, $area) {
+    public function updateApartment($id_apartement, $place, $address, $complement_address, $availability, $price_night, $area) {
         $newUser = new ApartementModel($id_apartement, $place, $address);
         return $this->apartmentRepository->updateUser($newUser);
     }
@@ -50,3 +50,4 @@ class AppartmentService {
 
 
 ?>
+
