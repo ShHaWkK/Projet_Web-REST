@@ -10,9 +10,10 @@ class ApartmentModel {
     public $price_night;
     public $area;
     public $id_users;
+    public $apartment_index;
 
     public
-    function __construct($id_apartement, $place, $address, $complement_address, $availability, $price_night, $area, $id_users)
+    function __construct($id_apartement, $place, $address, $complement_address, $availability, $price_night, $area, $id_users, $apartment_index = 1)
     {       
         $this->id_apartement = $id_apartement;
         $this->place = $place;
@@ -22,6 +23,7 @@ class ApartmentModel {
         $this->price_night = $price_night;
         $this->area = $area;
         $this->id_users = $id_users;
+        $this->apartment_index = $apartment_index;
     }
 }
 
