@@ -1,7 +1,7 @@
 <?php
 
 # Cet objet sert à transporter les données d'une entité Music de facon standard et indépendante de http ou de la BDD.
-class ApartementModel {
+class ApartmentModel {
     public $id_apartement;
     public $place;
     public $address;
