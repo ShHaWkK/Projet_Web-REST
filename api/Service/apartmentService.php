@@ -37,7 +37,7 @@ class ApartmentService
 
     //Met à jour un appartement
     public function updateApartment(($id_apartement, $place, $address, $complement_address, $availability, $price_night, $area, $id_users) {
-        $newUser = new ApartementModel($id_apartement, $place, $address, $complement_address, $availability, $price_night, $area, $id_users);
+        $newApartement = new ApartementModel($id_apartement, $place, $address, $complement_address, $availability, $price_night, $area, $id_users);
         return $this->apartmentRepository->updateApartment($id_apartement, ["id_apartement", "place", "address", "complement_address", "availability", "price_night", "area", "id_users"], [$id_apartement, $place, $address, $complement_address, $availability, $price_night, $area, $id_users]);
     }
 
