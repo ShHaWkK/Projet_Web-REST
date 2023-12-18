@@ -22,32 +22,42 @@ function userController($uri) {
             break;
 
 
+        // Create the user
         case 'POST':
          	$userService = new UserService($uri);
 
             $body = file_get_contents("php://input");
             $json = json_decode($body, true);
 
+            if (!isset($json['role']) || !isset($json['pseudo']))
+            {
+                exit_with_message("Plz give the role and the pseudo of the user");
+            }
+
             // Valider les données reçues ici
-            exit_with_content($userService->createUser($json["role"]));
+            exit_with_content($userService->createUser($json["role"], $json["pseudo"]));
 
             break;
 
 
+        // update the user
         case 'PUT':
         	$userService = new UserService($uri);
 
             $body = file_get_contents("php://input");
             $json = json_decode($body, true);
+            if (!isset($json["role"]) || !isset($json["pseudo"]) || !isset($json["user_index"])){
+                exit_with_message("Plz give, at least, the role, pseudo and the user_index");
+            }
             // Valider les données reçues ici
-            exit_with_content($userService->updateUser($uri[3], $json["role"]));
+            exit_with_content($userService->updateUser($uri[3], $json["role"], $json["pseudo"], $json["user_index"]));
             break;
 
 
         case 'DELETE':
             // Gestion des requêtes DELETE pour supprimer un utilisateur
             $userService = new UserService($uri);
-            exit_with_content($userService->deleteUser($uri[3]));
+            $userService->deleteUser($uri[3]);
             break;
 
         default:
