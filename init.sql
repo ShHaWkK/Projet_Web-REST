@@ -1,35 +1,40 @@
 CREATE TABLE USERS(
-    id_users SERIAL PRIMARY KEY,
-    role INT NOT NULL
+   id_users SERIAL PRIMARY KEY,
+   role INT NOT NULL,
+   pseudo VARCHAR(50) NOT NULL,
+   user_index INT NOT NULL DEFAULT 1,
+   apikey VARCHAR(50)
 );
 
 CREATE TABLE APARTMENT(
-    id_apartement SERIAL PRIMARY KEY,
-    place INT NOT NULL,
-    address VARCHAR(50) NOT NULL,
-    complement_address VARCHAR(50),
-    availability BOOLEAN NOT NULL,
-    price_night DECIMAL(15,2) NOT NULL,
-    area INT NOT NULL,
-    id_users INT NOT NULL,
-    FOREIGN KEY(id_users) REFERENCES USERS(id_users)
+   id_apartement SERIAL PRIMARY KEY,
+   place INT NOT NULL,
+   address VARCHAR(50) NOT NULL,
+   complement_address VARCHAR(50),
+   availability BOOLEAN NOT NULL,
+   price_night DECIMAL(15,2) NOT NULL,
+   area INT NOT NULL,
+   apartment_index INT NOT NULL DEFAULT 1,
+   id_users INT NOT NULL,
+   FOREIGN KEY(id_users) REFERENCES USERS(id_users)
 );
 
 CREATE TABLE RESERVATION(
-    id_reservation SERIAL PRIMARY KEY,
-    date_entry DATE NOT NULL,
-    date_exit DATE NOT NULL,
-    price_stay DECIMAL(15,2) NOT NULL,
-    id_users INT NOT NULL,
-    FOREIGN KEY(id_users) REFERENCES USERS(id_users)
+   id_reservation SERIAL PRIMARY KEY,
+   date_entry DATE NOT NULL,
+   date_exit DATE NOT NULL,
+   price_stay DECIMAL(15,2) NOT NULL,
+   etat INT NOT NULL DEFAULT 1,
+   id_users INT NOT NULL,
+   FOREIGN KEY(id_users) REFERENCES USERS(id_users)
 );
 
 CREATE TABLE TO_BOOK(
-    id_apartement INT,
-    id_reservation INT,
-    PRIMARY KEY(id_apartement, id_reservation),
-    FOREIGN KEY(id_apartement) REFERENCES APARTMENT(id_apartement),
-    FOREIGN KEY(id_reservation) REFERENCES RESERVATION(id_reservation)
+   id_apartement INT,
+   id_reservation INT,
+   PRIMARY KEY(id_apartement, id_reservation),
+   FOREIGN KEY(id_apartement) REFERENCES APARTMENT(id_apartement),
+   FOREIGN KEY(id_reservation) REFERENCES RESERVATION(id_reservation)
 );
 
 INSERT INTO USERS (role) VALUES (1), (2), (3), (4), (1), (2), (3), (4), (4), (4);
