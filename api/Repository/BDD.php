@@ -102,10 +102,11 @@ function selectDB($table, $colums, $condition = -1, $additionnalMessage = NULL){
 		if (checkMsg($e->getMessage(), $wordToSearch = "Undefined column"))
 		{
 
-			exit_with_message(explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist");
+			$tmp = explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist";
+			exit_with_message("Error : ".str_replace('"', "'", $tmp));
 		}
 
-	    exit_with_message("PDO error :" . $e->getMessage());
+	    exit_with_message("PDO error :" . str_replace('"', "'", explode("DETAIL: ", $e->getMessage())[1]));
 	}
 	return false;
 }
@@ -162,13 +163,15 @@ function insertDB($table, $columnArray, $columnData)
 		return true;
 	}
 	catch (PDOException $e)
-	{
+	{	
 		if (checkMsg($e->getMessage(), $wordToSearch = "Undefined column"))
 		{
-			exit_with_message(explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist");
+			//exit_with_message("caca");
+			$tmp = explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist";
+			exit_with_message("Error : ".str_replace('"', "'", $tmp));
 		}
 
-	    exit_with_message("PDO error :" . $e->getMessage());
+	    exit_with_message("PDO error :" . str_replace('"', "'", explode("DETAIL: ", $e->getMessage())[1]));
 	}
 
 	return false;
@@ -231,10 +234,11 @@ function updateDB($table, $columnArray, $columnData, $condition = null)
 		//exit();
 		if (checkMsg($e->getMessage(), $wordToSearch = "Undefined column"))
 		{
-			exit_with_message(explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist");
+			$tmp = explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist";
+			exit_with_message("Error : ".str_replace('"', "'", $tmp));
 		}
 
-	    exit_with_message("PDO error :" . explode("DETAIL: ", $e->getMessage())[1]);
+	    exit_with_message("PDO error :" . str_replace('"', "'", explode("DETAIL: ", $e->getMessage())[1]));
 	}
 	
 	return false;
@@ -270,10 +274,11 @@ function deleteDB($table, $condition)
 	{
 		if (checkMsg($e->getMessage(), $wordToSearch = "Undefined column"))
 		{
-			exit_with_message(explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist");
+			$tmp = explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist";
+			exit_with_message("Error : ".str_replace('"', "'", $tmp));
 		}
 
-	    exit_with_message("PDO error :" . explode("DETAIL: ", $e->getMessage())[1]);
+	    exit_with_message("PDO error :" . str_replace('"', "'", explode("DETAIL: ", $e->getMessage())[1]));
 	}
 	
 	return false;
