@@ -2,7 +2,7 @@
 
 include_once './Service/globalFunctions.php';
 
-function checkData($table = -10, $columnArray = -10, $columData = -10, $condition = -10){
+function checkData($table = -10, $columnArray = -10, $columnData = -10, $condition = -10){
 	$bool = false;
 
 	$sentence = "Please specifie ";
@@ -15,7 +15,7 @@ function checkData($table = -10, $columnArray = -10, $columData = -10, $conditio
 		$bool = true;
 		$sentence .= "the colums, ";
 	}
-	if (empty($columData)){
+	if (empty($columnData)){
 		$bool = true;
 		$sentence .= "the data, ";
 	}
@@ -61,7 +61,7 @@ function connectDB(){
 
 # -------------------------------------------------------------- #
 
-function selectDB($table, $colums, $condition = -1){
+function selectDB($table, $colums, $condition = -1, $additionnalMessage = NULL){
 	// -1 : the user want no condition or no condition entered by the user.
 	// $colums must be like that : $columns = "idusers, role"
 
@@ -88,7 +88,12 @@ function selectDB($table, $colums, $condition = -1){
 		$reponse = $result->fetchAll();
 		if ($reponse == false)
 		{
-			exit_with_message("ERROR : Impossible to select data");
+			if ($additionnalMessage == NULL){
+				exit_with_message("ERROR : Impossible to select data");
+			}
+			else{
+				exit_with_message("ERROR : Impossible to select data ".$additionnalMessage);
+			}
 		}
 		return $reponse;
 	}
@@ -102,29 +107,51 @@ function selectDB($table, $colums, $condition = -1){
 
 	    exit_with_message("PDO error :" . $e->getMessage());
 	}
-	return true;
+	return false;
 }
 
 # -------------------------------------------------------------- #
 
-function insertDB($table, $columnArray, $columData)
+function insertDB($table, $columnArray, $columnData)
 {
 	// -10 no condition enter by the user
 	// -1 : the user want no condition
 
-	checkData($table, $columnArray, $columData, -10);
+	checkData($table, $columnArray, $columnData, -10);
 
 	$db = connectDB();
+
 
 	$colums = $columnArray[0];
 	for ($i=1; $i < count($columnArray) ; $i++) { 
 		$colums .= ", " . $columnArray[$i];
 	}
 
-	$data = $columData[0];
-	for ($i=1; $i < count($columData) ; $i++) { 
-		$data .= ", " . $columData[$i];
+
+	if (gettype($columnData[0]) == "boolean") {
+	    $columnData[$i] == "1" ? $tmp = "true" : $tmp = "false";
+	    $data = $tmp;
+	} 
+	else if (gettype($columnData[0]) == "integer"){
+	    $data = $columnData[0];
 	}
+	else{
+		$data = $columnData[0]."'";
+	}
+
+	for ($i=1; $i < count($columnData) ; $i++) { 
+		if (gettype($columnData[$i]) == "boolean") {
+		    $columnData[$i] == "1" ? $tmp = "true" : $tmp = "false";
+		    $data .= ", " . $tmp;
+		} 
+		else if (gettype($columnData[$i]) == "integer"){
+		    $data .= ", " . $columnData[$i];
+		}
+		else{
+			$data .= ", '" . $columnData[$i]."'";
+		}
+	}
+
 
 	$dbRequest = 'INSERT INTO '. $table .'(' . $colums . ') VALUES ('. $data . ')';
 
@@ -132,7 +159,7 @@ function insertDB($table, $columnArray, $columData)
 		$result = $db->prepare($dbRequest);
 		$result->execute();
 
-		return false;
+		return true;
 	}
 	catch (PDOException $e)
 	{
@@ -144,27 +171,46 @@ function insertDB($table, $columnArray, $columData)
 	    exit_with_message("PDO error :" . $e->getMessage());
 	}
 
-	return true;
+	return false;
 }
 
 # -------------------------------------------------------------- #
 
-function updateDB($table, $columnArray, $columData, $condition = null)
+function updateDB($table, $columnArray, $columnData, $condition = null)
 {
 	// -10 no condition enter by the user
 	// -1 : the user want no condition
 
-	checkData($table, $columnArray, $columData, $condition);
+	checkData($table, $columnArray, $columnData, $condition);
 
-	if (count($columnArray) != count($columData)){
+	if (count($columnArray) != count($columnData)){
 		exit_with_message('ERROR : Colums and data must have the same length');
 	}
 
 	$db = connectDB();
 
-	$updatedData = $columnArray[0] . "=" . $columData[0];
+	// Need to have the first initialization for the concatenation for the db request "not have a ',' at the begining of the request"
+	if (gettype($columnData[0]) == "boolean") {
+	    $columnData[0] == "1" ? $tmp = "true" : $tmp = "false";
+	    $updatedData = $columnArray[0] . "=" . $tmp;
+	}
+	else{
+		$updatedData = $columnArray[0] . "='" . $columnData[0] ."'";
+	}
+
+
 	for ($i=1; $i < count($columnArray) ; $i++) {
-		$updatedData .= ", " . $columnArray[$i] . "=" . $columData[$i];
+		if (gettype($columnData[$i]) == "boolean") {
+		    $columnData[$i] == "1" ? $tmp = "true" : $tmp = "false";
+		    $updatedData .= ", " . $columnArray[$i] . "=" . $tmp;
+		} 
+		else if (gettype($columnData[$i]) == "integer"){
+			//var_dump($columnData[$i]);
+		    $updatedData .= ", " . $columnArray[$i] . "=" . $columnData[$i];
+		}
+		else{
+			$updatedData .= ", " . $columnArray[$i] . "='" . $columnData[$i]."'";
+		}
 	}
 
 	if ($condition == -1){
@@ -174,15 +220,15 @@ function updateDB($table, $columnArray, $columData, $condition = null)
 		$dbRequest = 'UPDATE '. $table .' SET ' . $updatedData .'  WHERE ' . $condition ;
 	}
 
-
 	try{
 		$result = $db->prepare($dbRequest);
 		$result->execute();
 
-		return false;
+		return true;
 	}
 	catch (PDOException $e)
 	{
+		//exit();
 		if (checkMsg($e->getMessage(), $wordToSearch = "Undefined column"))
 		{
 			exit_with_message(explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist");
@@ -191,7 +237,7 @@ function updateDB($table, $columnArray, $columData, $condition = null)
 	    exit_with_message("PDO error :" . explode("DETAIL: ", $e->getMessage())[1]);
 	}
 	
-	return true;
+	return false;
 }
 
 # -------------------------------------------------------------- #
@@ -201,6 +247,11 @@ function deleteDB($table, $condition)
 	checkData($table, -10, -10, $condition);
 
 	$db = connectDB();
+
+	if(!selectDB($table, "*", $condition, "to delete it, the data probably dont exist"))
+	{
+		exit_with_message("ERROR : The apartment doesn't exist");
+	}
 
 	if($condition == -1){
 		$dbRequest = 'DELETE FROM '. $table;
@@ -213,7 +264,7 @@ function deleteDB($table, $condition)
 		$result = $db->prepare($dbRequest);
 		$result->execute();
 
-		return false;
+		return true;
 	}
 	catch (PDOException $e)
 	{
@@ -225,7 +276,7 @@ function deleteDB($table, $condition)
 	    exit_with_message("PDO error :" . explode("DETAIL: ", $e->getMessage())[1]);
 	}
 	
-	return true;
+	return false;
 }
 
 

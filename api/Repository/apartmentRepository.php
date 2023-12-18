@@ -36,11 +36,14 @@ class ApartmentRepository {
 
         $apart = selectDB("APARTMENT", "*", "id_apartement=".$id);
 
-        return new ApartmentModel($apartArray[0]['id_apartement'], $apartArray[0]['place'], $apartArray[0]['address'], $apartArray[0]['complement_address'], $apartArray[0]['availability'], $apartArray[0]['price_night'], $apartArray[0]['area'], $apartArray[0]['id_users']);
+        return new ApartmentModel($apart[0]['id_apartement'], $apart[0]['place'], $apart[0]['address'], $apart[0]['complement_address'], $apart[0]['availability'], $apart[0]['price_night'], $apart[0]['area'], $apart[0]['id_users']);
     }
 
     public function deleteApartment($id){
-        deleteDB("APARTEMENT", "id_apartement=".$id);
+        if(deleteDB("APARTMENT", "id_apartement=".$id)){
+            exit_with_message("Deleted successful");
+        }
+        exit_with_message("Failed to delete");
     }
 
     
@@ -48,18 +51,27 @@ class ApartmentRepository {
         insertDB("APARTMENT", ["place", "address", "complement_address", "availability", "price_night", "area", "id_users"], [$apartment->place, $apartment->address, $apartment->complement_address, $apartment->availability, $apartment->price_night, $apartment->area, $apartment->id_users]);
 
         //SELECT * FROM APARTMENT WHERE id_apartment = (SELECT MAX(id_apartment) FROM APARTMENT WHERE id_users = 'your_user_id');
-        $maxID = selectDB('APARTMENT', MAX("id_apartement"), "id_users=".$apartment->id_users);
-        selectDB('APARTMENT', '*', "id_apartement=(".$maxID.")");
-
-        return getApartment($apartment->id_apartement);
+        $maxID = selectDB('APARTMENT', 'MAX("id_apartement")', "id_users=".$apartment->id_users)[0]['max'];
+        return selectDB('APARTMENT', '*', "id_apartement=".$maxID);
     }
 
     
-    public function updateApartment($id, $colunm, $values){
-        
-        updateDB("APARTMENT", $colunm, $values, "id_apartement=".$id);
+    public function updateApartment($id_apartement, $colunm, $values){
 
-        return getApartment($apartment->id_apartement); 
+        // var_dump($colunm);
+        // var_dump($values);
+        //exit();
+        
+        
+        if (updateDB("APARTMENT", $colunm, $values, "id_apartement=".$id_apartement)){
+
+            return true;
+            //exit_with_message("Updated successful");
+        }
+        exit_with_message("Updated failed");
+        
+
+        
     }
 }
 
