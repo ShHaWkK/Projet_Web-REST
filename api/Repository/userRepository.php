@@ -43,13 +43,15 @@ class UserRepository {
     }
 
     //-------------------------------------
+    
+    public function createUser(UserModel $user){
+        insertDB("USERS", ["role", "apiKey"], [$user->role, $user->apiKey]);
 
-    public function deleteUser($id){
-        deleteDB("USERS", "id_users=".$id);
+        return $this->getUser($user->id_users);
     }
 
     //-------------------------------------
-    
+
     public function updateUser(UserModel $user){
         
         updateDB("USERS", ["role"], [$user->role], 'id_users='.$user->id_users);
@@ -58,12 +60,11 @@ class UserRepository {
     }
 
     //-------------------------------------
-    
-    public function createUser(UserModel $user){
-        insertDB("USERS", ["role", "apiKey"], [$user->role, $user->apiKey]);
 
-        return $this->getUser($user->id_users);
+    public function deleteUser($id){
+        deleteDB("USERS", "id_users=".$id);
     }
+    
 
 }
 

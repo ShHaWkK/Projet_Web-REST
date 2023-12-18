@@ -3,6 +3,7 @@
 include_once './Repository/BDD.php';
 include_once './Controller/apartmentController.php';
 include_once './Controller/userController.php';
+include_once './Controller/reservationController.php';
 
 
 // Skipper les warnings, pour la production (vos exceptions devront être gérées proprement)
@@ -49,8 +50,13 @@ function controller($uri) {
         case 'user':
             userController($uri);
             break;
+
         case 'apartment':
             apartmentController($uri);
+            break;
+
+        case 'reservation':
+            reservationController($uri);
             break;
 
         default:
