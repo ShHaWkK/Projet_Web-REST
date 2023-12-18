@@ -1,5 +1,6 @@
 <?php
-include_once '../Repository/apartmentRepository.php'; 
+include_once './Repository/apartmentRepository.php'; 
+include_once './Models/apartmentModel.php';
 
 class ApartmentService {
     //private $apartmentRepository;
@@ -9,10 +10,6 @@ class ApartmentService {
     {       
         $this->uri = $uri;
     }
-	
-	*/
-	$apartmentRepository = new apartmentRepository();
-
 
     //Récupère tous les appartements
     public function getAllApartments() {
@@ -56,8 +53,8 @@ class ApartmentService {
         return $apartmentRepository->delete($id_apartement);
     }
 
-
 }
 
 
 ?>
+
