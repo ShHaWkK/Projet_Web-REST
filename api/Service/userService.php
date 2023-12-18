@@ -57,30 +57,6 @@ class UserService {
         return $userRepository->deleteUser($id);
     }
 
-    /*
-     *  Vérifie si le rôle est valide
-    */
-    
-    /*
-    public function createUserWithRole($role, $apiKey) {
-        if (!$this->isValidRole($role)) {
-            throw new Exception("Invalid role specified.");
-        }
-        $newUser = new UserModel(null, $role, $apiKey); 
-        return $this->userRepository->createUser($newUser);
-    }
-
-    
-    public function updateUserWithRole($id_users, $role, $apiKey) {
-        // Même validation pour le rôle
-        if (!$this->isValidRole($role)) {
-            throw new Exception("Invalid role specified.");
-        }
-        $updatedUser = new UserModel($id_users, $role, $apiKey);
-        return $this->userRepository->updateUser($updatedUser);
-    }
-    */
-
 
     public function isValidRole($role) {
         $validRoles = [1 => 'admin', 2 => 'modo', 3 => 'propriétaire', 4 => 'client'];

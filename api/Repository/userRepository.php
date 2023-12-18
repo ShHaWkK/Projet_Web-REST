@@ -60,8 +60,6 @@ class UserRepository {
     //-------------------------------------
     
     public function createUser(UserModel $user){
-        var_dump($user);
-        exit();
         insertDB("USERS", ["role", "apiKey"], [$user->role, $user->apiKey]);
 
         return $this->getUser($user->id_users);
