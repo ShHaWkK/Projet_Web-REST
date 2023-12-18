@@ -1,7 +1,7 @@
 <?php
 //include_once './Service/globalFunctions.php';
 include_once './Repository/BDD.php';
-include_once './Controller/appartementController.php';
+include_once './Controller/apartmentController.php';
 include_once './Controller/userController.php';
 
 
