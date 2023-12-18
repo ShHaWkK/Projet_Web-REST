@@ -26,7 +26,16 @@ function apartmentController($uri) {
             $jsonData = file_get_contents('php://input');
             $data = json_decode($jsonData, true);
 
-            exit_with_content($apartementService->addApartment(null, $data['place'], $data['address'], $data['complement_address'], $data['availability'], $data['price_night'], $data['area'], $data['id_users']));
+            if (count($data) < 7){
+                exit_with_message("Plz give at least the 6 args : place, address, complement_address, availability, price_night, area, id_user (owner)");
+            }
+
+            try{
+                exit_with_content($apartementService->addApartment(null, $data['place'], $data['address'], $data['complement_address'], $data['availability'], $data['price_night'], $data['area'], $data['id_users']));
+            }
+            catch(err){
+                exit_with_message("Plz give at least the 6 args : place, address, complement_address, availability, price_night, area");
+            }
             break;
 
 
@@ -38,8 +47,17 @@ function apartmentController($uri) {
             if (isset($data['apartment_index']) && $data["apartment_index"] == -1){
                 exit_with_message("You can't update the apartment index, user the DELETE methode to unreference it");
             }
+            if (count($data) < 6){
+                exit_with_message("Plz give at least the 6 args : place, address, complement_address, availability, price_night, area");
+            }
 
-            exit_with_content($apartementService->updateApartment($uri[3], $data['place'], $data['address'], $data['complement_address'], $data['availability'], $data['price_night'], $data['area']));
+            try{
+                exit_with_content($apartementService->updateApartment($uri[3], $data['place'], $data['address'], $data['complement_address'], $data['availability'], $data['price_night'], $data['area']));
+            }
+            catch(err){
+                exit_with_message("Plz give at least the 6 args : place, address, complement_address, availability, price_night, area");
+            }
+
             break;
 
 
@@ -48,6 +66,10 @@ function apartmentController($uri) {
 
             $jsonData = file_get_contents('php://input');
             $data = json_decode($jsonData, true);
+
+            if(!isset($data["availability"])){
+                exit_with_message("Plz give the availability of the apartment (boolean)");
+            }
 
             exit_with_content($apartementService->updateApartmentAvail($uri[3], $data["availability"]));
             break;
