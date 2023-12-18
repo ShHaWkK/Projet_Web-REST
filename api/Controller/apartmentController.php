@@ -1,13 +1,14 @@
 
 <?php
-include_once './Models/apartmentService.php';
+include_once './Service/apartmentService.php';
 
-function appartement_controller($uri) {
-    $apartementService = new ApartmentService();
+function apartmentController($uri) {
+    $apartementService = new ApartmentService($uri);
     
     switch($_SERVER['REQUEST_METHOD']) {
         case 'GET':
-            apartment_get($uri, $apartementService);
+            exit_with_content($apartementService->getAllApartments());
+            //apartment_get($uri, $apartementService);
             break;
 
         case 'POST':
