@@ -51,22 +51,25 @@ class ApartmentRepository {
         insertDB("APARTMENT", ["place", "address", "complement_address", "availability", "price_night", "area", "id_users"], [$apartment->place, $apartment->address, $apartment->complement_address, $apartment->availability, $apartment->price_night, $apartment->area, $apartment->id_users]);
 
         //SELECT * FROM APARTMENT WHERE id_apartment = (SELECT MAX(id_apartment) FROM APARTMENT WHERE id_users = 'your_user_id');
-        $maxID = selectDB('APARTMENT', MAX("id_apartement"), "id_users=".$apartment->id_users);
-        selectDB('APARTMENT', '*', "id_apartement=(".$maxID.")");
-
-        return getApartment($apartment->id_apartement);
+        $maxID = selectDB('APARTMENT', 'MAX("id_apartement")', "id_users=".$apartment->id_users)[0]['max'];
+        return selectDB('APARTMENT', '*', "id_apartement=".$maxID);
     }
 
     
     public function updateApartment($id_apartement, $colunm, $values){
+
+        // var_dump($colunm);
+        // var_dump($values);
+        //exit();
+        
         
         if (updateDB("APARTMENT", $colunm, $values, "id_apartement=".$id_apartement)){
 
-            $tmp = new ApartmentRepository();
-            return $tmp->getApartment($id_apartement); 
+            return true;
             //exit_with_message("Updated successful");
         }
         exit_with_message("Updated failed");
+        
 
         
     }

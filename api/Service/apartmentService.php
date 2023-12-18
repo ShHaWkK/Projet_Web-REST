@@ -27,16 +27,21 @@ class ApartmentService {
     //Créer un appartement
     public function addApartment($id_appartement, $place, $address, $complement_address, $availability, $price_night, $area, $id_users) {
         $apartmentRepository = new ApartmentRepository();
-        $newApartment = new ApartmentModel(null, $place, $address, $complement_address, $availability, $price_night, $area, $id_users, $id_appartement);
-        return $apartmentRepository->addApartment($newApartment);
+        $newApartment = new ApartmentModel(12, $place, $address, $complement_address, $availability, $price_night, $area, $id_users);
+        
+        $id_apprt = $apartmentRepository->addApartment($newApartment);
+        return $apartmentRepository->getApartment($id_apprt[0]["id_apartement"]);
     }
 
 
     //Met à jour un appartement
     public function updateApartment($id_apartement, $place, $address, $complement_address, $availability, $price_night, $area) {
         $apartmentRepository = new ApartmentRepository();
-        $apartmentRepository->updateApartment($id_apartement, ["place", "address", "complement_address", "availability", "price_night", "area"], [$place, $address, $complement_address, $availability, $price_night, $area]);
-        return;
+        if ($apartmentRepository->updateApartment($id_apartement, ["place", "address", "complement_address", "availability", "price_night", "area"], [$place, $address, $complement_address, $availability, $price_night, $area]))
+        {
+            return $apartmentRepository->getApartment($id_apartement);
+        }
+        exit_with_message('Updated ok, failed to retrieve the apartment updated');
     }
 
     
@@ -48,7 +53,7 @@ class ApartmentService {
             exit_with_message("You need to have a boolean to update the availability of the apartment");
         }
         $apartmentRepository = new ApartmentRepository();
-        
+
         $apartmentRepository->updateApartment($id_apartement, ["availability"], [$availability]);
         return $apartmentRepository->getApartment($id_apartement);
     }

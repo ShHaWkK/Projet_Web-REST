@@ -2,7 +2,7 @@
 
 include_once './Service/globalFunctions.php';
 
-function checkData($table = -10, $columnArray = -10, $columData = -10, $condition = -10){
+function checkData($table = -10, $columnArray = -10, $columnData = -10, $condition = -10){
 	$bool = false;
 
 	$sentence = "Please specifie ";
@@ -15,7 +15,7 @@ function checkData($table = -10, $columnArray = -10, $columData = -10, $conditio
 		$bool = true;
 		$sentence .= "the colums, ";
 	}
-	if (empty($columData)){
+	if (empty($columnData)){
 		$bool = true;
 		$sentence .= "the data, ";
 	}
@@ -112,24 +112,46 @@ function selectDB($table, $colums, $condition = -1, $additionnalMessage = NULL){
 
 # -------------------------------------------------------------- #
 
-function insertDB($table, $columnArray, $columData)
+function insertDB($table, $columnArray, $columnData)
 {
 	// -10 no condition enter by the user
 	// -1 : the user want no condition
 
-	checkData($table, $columnArray, $columData, -10);
+	checkData($table, $columnArray, $columnData, -10);
 
 	$db = connectDB();
+
 
 	$colums = $columnArray[0];
 	for ($i=1; $i < count($columnArray) ; $i++) { 
 		$colums .= ", " . $columnArray[$i];
 	}
 
-	$data = $columData[0];
-	for ($i=1; $i < count($columData) ; $i++) { 
-		$data .= ", " . $columData[$i];
+
+	if (gettype($columnData[0]) == "boolean") {
+	    $columnData[$i] == "1" ? $tmp = "true" : $tmp = "false";
+	    $data = $tmp;
+	} 
+	else if (gettype($columnData[0]) == "integer"){
+	    $data = $columnData[0];
 	}
+	else{
+		$data = $columnData[0]."'";
+	}
+
+	for ($i=1; $i < count($columnData) ; $i++) { 
+		if (gettype($columnData[$i]) == "boolean") {
+		    $columnData[$i] == "1" ? $tmp = "true" : $tmp = "false";
+		    $data .= ", " . $tmp;
+		} 
+		else if (gettype($columnData[$i]) == "integer"){
+		    $data .= ", " . $columnData[$i];
+		}
+		else{
+			$data .= ", '" . $columnData[$i]."'";
+		}
+	}
+
 
 	$dbRequest = 'INSERT INTO '. $table .'(' . $colums . ') VALUES ('. $data . ')';
 
@@ -154,34 +176,42 @@ function insertDB($table, $columnArray, $columData)
 
 # -------------------------------------------------------------- #
 
-function updateDB($table, $columnArray, $columData, $condition = null)
+function updateDB($table, $columnArray, $columnData, $condition = null)
 {
 	// -10 no condition enter by the user
 	// -1 : the user want no condition
 
-	checkData($table, $columnArray, $columData, $condition);
+	checkData($table, $columnArray, $columnData, $condition);
 
-	if (count($columnArray) != count($columData)){
+	if (count($columnArray) != count($columnData)){
 		exit_with_message('ERROR : Colums and data must have the same length');
 	}
 
 	$db = connectDB();
 
-	var_dump(gettype($columData[0]));
-	//exit();
-
-	if (gettype($columData[0]) == "boolean") {
-	    $columData[0] == "1" ? $updatedData = $columnArray[0] . "=" . "true" : $updatedData = $columnArray[0] . "=" . "false";
+	// Need to have the first initialization for the concatenation for the db request "not have a ',' at the begining of the request"
+	if (gettype($columnData[0]) == "boolean") {
+	    $columnData[0] == "1" ? $tmp = "true" : $tmp = "false";
+	    $updatedData = $columnArray[0] . "=" . $tmp;
 	}
 	else{
-		$updatedData = $columnArray[0] . "=" . $columData[0];
-		for ($i=1; $i < count($columnArray) ; $i++) {
-			$updatedData .= ", " . $columnArray[$i] . "=" . $columData[$i];
-		}
+		$updatedData = $columnArray[0] . "='" . $columnData[0] ."'";
 	}
 
-	var_dump($updatedData);
-	exit();
+
+	for ($i=1; $i < count($columnArray) ; $i++) {
+		if (gettype($columnData[$i]) == "boolean") {
+		    $columnData[$i] == "1" ? $tmp = "true" : $tmp = "false";
+		    $updatedData .= ", " . $columnArray[$i] . "=" . $tmp;
+		} 
+		else if (gettype($columnData[$i]) == "integer"){
+			//var_dump($columnData[$i]);
+		    $updatedData .= ", " . $columnArray[$i] . "=" . $columnData[$i];
+		}
+		else{
+			$updatedData .= ", " . $columnArray[$i] . "='" . $columnData[$i]."'";
+		}
+	}
 
 	if ($condition == -1){
 		$dbRequest = 'UPDATE '. $table .' SET ' . $updatedData;
@@ -189,7 +219,6 @@ function updateDB($table, $columnArray, $columData, $condition = null)
 	else{
 		$dbRequest = 'UPDATE '. $table .' SET ' . $updatedData .'  WHERE ' . $condition ;
 	}
-
 
 	try{
 		$result = $db->prepare($dbRequest);
@@ -199,6 +228,7 @@ function updateDB($table, $columnArray, $columData, $condition = null)
 	}
 	catch (PDOException $e)
 	{
+		//exit();
 		if (checkMsg($e->getMessage(), $wordToSearch = "Undefined column"))
 		{
 			exit_with_message(explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist");

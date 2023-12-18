@@ -7,6 +7,8 @@ function apartmentController($uri) {
 
     switch($_SERVER['REQUEST_METHOD']) {
 
+
+        // Retrieve apartments
         case 'GET':
 
             if($uri[3]){
@@ -18,22 +20,26 @@ function apartmentController($uri) {
             
             break;
 
+
+        // Create apartment
         case 'POST':
             $jsonData = file_get_contents('php://input');
             $data = json_decode($jsonData, true);
 
-            exit_with_content($apartementService->addApartment($data['id_apartement'], $data['place'], $data['address'], $data['complement_address'], $data['availability'], $data['price_night'], $data['area'], $data['id_users']));
+            exit_with_content($apartementService->addApartment(null, $data['place'], $data['address'], $data['complement_address'], $data['availability'], $data['price_night'], $data['area'], $data['id_users']));
             break;
 
 
+        // Update apartment
         case 'PUT':
             $jsonData = file_get_contents('php://input');
             $data = json_decode($jsonData, true);
 
-            exit_with_content($apartementService->updateApartment($data['id_apartement'], $data['place'], $data['address'], $data['complement_address'], $data['availability'], $data['price_night'], $data['area'], $data['id_users']));
+            exit_with_content($apartementService->updateApartment($data['id_apartement'], $data['place'], $data['address'], $data['complement_address'], $data['availability'], $data['price_night'], $data['area']));
             break;
 
 
+        // Update the availability of the apartment
         case 'PATCH':
 
             $jsonData = file_get_contents('php://input');
@@ -43,6 +49,7 @@ function apartmentController($uri) {
             break;
 
 
+        // Delete the apartment
         case 'DELETE':
             if($uri[3]){
                 exit_with_content($apartementService->deleteApartment($uri[3]));
