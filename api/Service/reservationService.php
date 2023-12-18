@@ -26,27 +26,65 @@ class ReservationService {
         return $reservationRepository->getToBook($id_reservation);
     }
 
-    public function createReservation($role) {
+    public function createReservation(ReservationDataModel $ReservModel) {
         $reservationRepository = new ReservationRepository();
-        $newReservation = new ReservationModel(12, $role, null);
-        return $reservationRepository->createReservation($newReservation);
+
+
+        // Retrieve all the reserved appart with the same ID
+        $id_Reserv = (selectDB('TO_BOOK', "id_reservation", "id_apartement=".$ReservModel->id_apartement));
+
+        for ($i=0; $i < count($id_Reserv); $i++) { 
+
+            $tmp = selectDB("RESERVATION", "id_reservation, date_entry, date_exit, id_users", "id_reservation=".$id_Reserv[$i]["id_reservation"]." AND etat=1")[0];
+
+            if ($tmp){
+
+                if (strtotime($ReservModel->date_entry) > strtotime($ReservModel->date_exit) ){
+                    exit_with_message("Error : date_entry > date_exit :/");
+                }
+                
+                if (strtotime($ReservModel->date_entry) >= strtotime($tmp["date_entry"]) && strtotime($ReservModel->date_entry) <= strtotime($tmp["date_exit"])){
+                    if ($tmp["id_users"] != $ReservModel->id_users){
+                        exit_with_message("Error : You can't reserv this appartment (id : ". $ReservModel->id_apartement ."), it already reserved during this period : ". $tmp["date_entry"] . " to " . $tmp["date_exit"]);
+                    }
+                    exit_with_message("You already have booked this apartment at this time");
+                }
+
+                if (strtotime($ReservModel->date_exit) >= strtotime($tmp["date_entry"]) && strtotime($ReservModel->date_exit) <= strtotime($tmp["date_exit"])){
+                    if ($tmp["id_users"] != $ReservModel->id_users){
+                        exit_with_message("Error : You can't reserv this appartment (id : ". $ReservModel->id_apartement ."), it already reserved during this period : ". $tmp["date_entry"] . " to " . $tmp["date_exit"]);
+                    }
+                    exit_with_message("You already have booked this apartment at this time");
+                }
+
+                if (strtotime($ReservModel->date_entry) <= strtotime($tmp["date_entry"]) && strtotime($ReservModel->date_exit) >= strtotime($tmp["date_exit"])){
+                    if ($tmp["id_users"] != $ReservModel->id_users){    
+                        exit_with_message("Error : You can't reserv this appartment (id : ". $ReservModel->id_apartement ."), it already reserved during this period : ". $tmp["date_entry"] . " to " . $tmp["date_exit"]);
+                    }
+                    exit_with_message("You already have booked this apartment at this time");
+                }
+
+                if (strtotime($ReservModel->date_entry) == strtotime($ReservModel->date_exit) ){
+                    if ($tmp["id_users"] != $ReservModel->id_users){    
+                        exit_with_message("Error : You can't reserv this appartment (id : ". $ReservModel->id_apartement .") just for one day, you need one night with it.");
+                    }
+                    exit_with_message("You already have booked this apartment at this time");
+                }
+            }
+        }
+
+        $price = selectDB('APARTMENT', 'price_night', "id_apartement=".$ReservModel->id_apartement)[0]["price_night"]+0;
+        $ReservModel->price_stay = $price*((strtotime($ReservModel->date_exit) - strtotime($ReservModel->date_entry)) / (60 * 60 * 24));
+
+        return $reservationRepository->createReservation($ReservModel);
     }
 
-    /*
-    public function updateReservation($id_users, $role) {
-        $reservationRepository = new reservationRepository();
-        $newUser = new UserModel($id_users, $role, null);
-        return $reservationRepository->updateUser($newUser);
-    }
-    */
+    public function cancelReservation($id) {
 
-
-    /*
-     *  Supprime un utilisateur
-    */
-    public function deleteReservation($id) {
+        exit_with_message("Under construction..");
+        // Faut supprimer de to_book et de reservation....
         $reservationRepository = new reservationRepository();
-        return $reservationRepository->deleteReservation($id);
+        return $reservationRepository->cancelReservation($id);
     }
     
 }

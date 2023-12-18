@@ -8,6 +8,8 @@ include_once './exceptions.php';
 function ReservationController($uri) {
     
     switch ($_SERVER['REQUEST_METHOD']) {
+
+        // Retrieve Reservation(s)
         case 'GET':
 
         	$reservationService = new ReservationService($uri);
@@ -23,32 +25,30 @@ function ReservationController($uri) {
             break;
 
 
+        // Create Reservation
         case 'POST':
          	$reservationService = new ReservationService($uri);
 
             $body = file_get_contents("php://input");
             $json = json_decode($body, true);
 
+            if (!isset($json["id_apartement"]) || !isset($json["date_entry"]) || !isset($json["date_exit"]) || !isset($json["id_users"])){
+                exit_with_message("Plz give id_apartement, date_entry, date_exit_ price_stay and id_users to create a new reservation");
+            }
+
+            $reservModel = new ReservationDataModel($json["date_entry"], $json["date_exit"], NULL, $json["id_users"], $json["id_apartement"]);
+
             // Valider les données reçues ici
-            exit_with_content($reservationService->createUser($json["role"]));
+            exit_with_content($reservationService->createReservation($reservModel));
 
             break;
 
 
-        case 'PUT':
-        	$reservationService = new ReservationService($uri);
-
-            $body = file_get_contents("php://input");
-            $json = json_decode($body, true);
-            // Valider les données reçues ici
-            exit_with_content($reservationService->updateUser($uri[3], $json["role"]));
-            break;
-
-
+        // Cancel Reservation
         case 'DELETE':
             // Gestion des requêtes DELETE pour supprimer
             $reservationService = new ReservationService($uri);
-            exit_with_content($reservationService->deleteUser($uri[3]));
+            exit_with_content($reservationService->cancelReservation($uri[3]));
             break;
 
         default:

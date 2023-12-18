@@ -53,10 +53,14 @@ class ReservationRepository {
 
     //-------------------------------------
     
-    public function createReservation(UserModel $user){
-        insertDB("USERS", ["role", "apiKey"], [$user->role, $user->apiKey]);
+    public function createReservation(ReservationDataModel $ReservModel){
+        insertDB('RESERVATION', ["date_entry", "date_exit", "price_stay", "id_users", "etat"], [$ReservModel->date_entry, $ReservModel->date_exit, $ReservModel->price_stay, $ReservModel->id_users, 1]);
 
-        return $this->getUser($user->id_users);
+        $id_reserv = selectDB('RESERVATION', "id_reservation", "date_exit='".$ReservModel->date_exit."' AND id_users=".$ReservModel->id_users)[0]["id_reservation"];
+
+        insertDB("TO_BOOK", ["id_reservation", "id_apartement"], [$id_reserv, $ReservModel->id_apartement]);
+
+        return $this->getReservation($id_reserv);
     }
 
     //-------------------------------------
@@ -70,7 +74,7 @@ class ReservationRepository {
 
     //-------------------------------------
 
-    public function deleteReservation($id){
+    public function cancelReservation($id){
         deleteDB("USERS", "id_users=".$id);
     }
 

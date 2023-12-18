@@ -81,6 +81,10 @@ function selectDB($table, $colums, $condition = -1, $additionnalMessage = NULL){
 		$dbRequest = 'SELECT '. $colums .' FROM '. $table . ' WHERE ' . $condition;
 	}
 
+	if($additionnalMessage == "-@"){
+		var_dump($dbRequest);
+	}
+
 	try{
 		$result = $db->prepare($dbRequest);
 		$result->execute();
@@ -88,7 +92,7 @@ function selectDB($table, $colums, $condition = -1, $additionnalMessage = NULL){
 		$reponse = $result->fetchAll();
 		if ($reponse == false)
 		{
-			if ($additionnalMessage == NULL){
+			if ($additionnalMessage == NULL || $additionnalMessage == "-@"){
 				exit_with_message("ERROR : Impossible to select data");
 			}
 			else{
@@ -99,6 +103,11 @@ function selectDB($table, $colums, $condition = -1, $additionnalMessage = NULL){
 	}
 	catch (PDOException $e)
 	{
+		if($additionnalMessage == "-@"){
+			echo($e->getMessage());
+			exit();
+		}
+
 		if (checkMsg($e->getMessage(), $wordToSearch = "Undefined column"))
 		{
 
@@ -113,7 +122,7 @@ function selectDB($table, $colums, $condition = -1, $additionnalMessage = NULL){
 
 # -------------------------------------------------------------- #
 
-function insertDB($table, $columnArray, $columnData)
+function insertDB($table, $columnArray, $columnData, $returningData = null)
 {
 	// -10 no condition enter by the user
 	// -1 : the user want no condition
@@ -137,7 +146,7 @@ function insertDB($table, $columnArray, $columnData)
 	    $data = $columnData[0];
 	}
 	else{
-		$data = $columnData[0]."'";
+		$data = "'".$columnData[0]."'";
 	}
 
 	for ($i=1; $i < count($columnData) ; $i++) { 
@@ -153,17 +162,20 @@ function insertDB($table, $columnArray, $columnData)
 		}
 	}
 
-
-	$dbRequest = 'INSERT INTO '. $table .'(' . $colums . ') VALUES ('. $data . ')';
-
+	$dbRequest = 'INSERT INTO '. $table .' (' . $colums . ') VALUES ('. $data . ')';
+	
 	try{
 		$result = $db->prepare($dbRequest);
 		$result->execute();
 
-		return true;
+		if ($returningData == null){
+			return true;
+		}
+		return selectDB($table, '*', $returningData);
 	}
 	catch (PDOException $e)
 	{	
+
 		if (checkMsg($e->getMessage(), $wordToSearch = "Undefined column"))
 		{
 			//exit_with_message("caca");
