@@ -35,7 +35,7 @@ function apartmentController($uri) {
             $jsonData = file_get_contents('php://input');
             $data = json_decode($jsonData, true);
 
-            exit_with_content($apartementService->updateApartment($data['id_apartement'], $data['place'], $data['address'], $data['complement_address'], $data['availability'], $data['price_night'], $data['area']));
+            exit_with_content($apartementService->updateApartment($uri[3], $data['place'], $data['address'], $data['complement_address'], $data['availability'], $data['price_night'], $data['area']));
             break;
 
 
@@ -45,7 +45,7 @@ function apartmentController($uri) {
             $jsonData = file_get_contents('php://input');
             $data = json_decode($jsonData, true);
 
-            exit_with_content($apartementService->updateApartmentAvail($data["id_apartment"], $data["availability"]));
+            exit_with_content($apartementService->updateApartmentAvail($uri[3], $data["availability"]));
             break;
 
 
