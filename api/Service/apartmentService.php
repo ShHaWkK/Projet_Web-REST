@@ -1,6 +1,6 @@
 <?php
-include_once '../Repository/apartmentRepository.php'; 
-include_once '../Models/apartmentModel.php';
+include_once './Repository/apartmentRepository.php'; 
+include_once './Models/apartmentModel.php';
 
 class AppartmentService {
     private $apartmentRepository;
