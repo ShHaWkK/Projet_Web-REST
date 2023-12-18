@@ -17,6 +17,7 @@ class UserRepository {
             throw new BDDException("Could not connect db: ". $e->getMessage());
         }
     }
+    
     //-------------------------------------
 
     public function getUsers(){
@@ -25,29 +26,45 @@ class UserRepository {
         $user = [];
         $usersTest = [];
 
-        for ($i=0; $i < count($usersTest); $i++) { 
-            $apartTest[$i] = new UserModel($usersTest[$i]['id_users'], $usersTest[$i]['role'], $usersTest[$i]['apiKey']);
+        for ($i=0; $i < count($usersArray); $i++) { 
+            $user[$i] = new UserModel($usersArray[$i]['id_users'], $usersArray[$i]['role'], $usersArray[$i]['apiKey']);
         }
 
-        return $usersTest;
+        return $user;
     }
+
+    //-------------------------------------
 
     public function getUser($id){
 
         $user = selectDB("USERS", "*", "id_users=".$id);
 
-         return new UserModel($user[0]['id_users'], $user[0]['role'], $user[0]['apiKey']);
+        return new UserModel($user[0]['id_users'], $user[0]['role'], $user[0]['apiKey']);
     }
+
+    //-------------------------------------
 
     public function deleteUser($id){
         deleteDB("USERS", "id_users=".$id);
     }
 
+    //-------------------------------------
+    
+    public function updateUser(UserModel $user){
+        
+        updateDB("USERS", ["role"], [$user->role], 'id_users='.$user->id_users);
+
+        return $this->getUser($user->id_users);
+    }
+
+    //-------------------------------------
     
     public function createUser(UserModel $user){
-        insertDB("USERS", ["id_users", "role", "apiKey"], [$user->id_users, $user->role, $user->apiKey]);
+        var_dump($user);
+        exit();
+        insertDB("USERS", ["role", "apiKey"], [$user->role, $user->apiKey]);
 
-        return getUser($user->id_users);
+        return $this->getUser($user->id_users);
     }
 
 }
