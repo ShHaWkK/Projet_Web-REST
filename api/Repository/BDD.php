@@ -61,7 +61,7 @@ function connectDB(){
 
 # -------------------------------------------------------------- #
 
-function selectDB($table, $colums, $condition = -1){
+function selectDB($table, $colums, $condition = -1, $additionnalMessage = NULL){
 	// -1 : the user want no condition or no condition entered by the user.
 	// $colums must be like that : $columns = "idusers, role"
 
@@ -88,7 +88,12 @@ function selectDB($table, $colums, $condition = -1){
 		$reponse = $result->fetchAll();
 		if ($reponse == false)
 		{
-			exit_with_message("ERROR : Impossible to select data");
+			if ($additionnalMessage == NULL){
+				exit_with_message("ERROR : Impossible to select data");
+			}
+			else{
+				exit_with_message("ERROR : Impossible to select data ".$additionnalMessage);
+			}
 		}
 		return $reponse;
 	}
@@ -102,7 +107,7 @@ function selectDB($table, $colums, $condition = -1){
 
 	    exit_with_message("PDO error :" . $e->getMessage());
 	}
-	return true;
+	return false;
 }
 
 # -------------------------------------------------------------- #
@@ -132,7 +137,7 @@ function insertDB($table, $columnArray, $columData)
 		$result = $db->prepare($dbRequest);
 		$result->execute();
 
-		return false;
+		return true;
 	}
 	catch (PDOException $e)
 	{
@@ -144,7 +149,7 @@ function insertDB($table, $columnArray, $columData)
 	    exit_with_message("PDO error :" . $e->getMessage());
 	}
 
-	return true;
+	return false;
 }
 
 # -------------------------------------------------------------- #
@@ -179,7 +184,7 @@ function updateDB($table, $columnArray, $columData, $condition = null)
 		$result = $db->prepare($dbRequest);
 		$result->execute();
 
-		return false;
+		return true;
 	}
 	catch (PDOException $e)
 	{
@@ -191,7 +196,7 @@ function updateDB($table, $columnArray, $columData, $condition = null)
 	    exit_with_message("PDO error :" . explode("DETAIL: ", $e->getMessage())[1]);
 	}
 	
-	return true;
+	return false;
 }
 
 # -------------------------------------------------------------- #
@@ -201,6 +206,11 @@ function deleteDB($table, $condition)
 	checkData($table, -10, -10, $condition);
 
 	$db = connectDB();
+
+	if(!selectDB($table, "*", $condition, "to delete it, the data probably dont exist"))
+	{
+		exit_with_message("ERROR : The apartment doesn't exist");
+	}
 
 	if($condition == -1){
 		$dbRequest = 'DELETE FROM '. $table;
@@ -213,7 +223,7 @@ function deleteDB($table, $condition)
 		$result = $db->prepare($dbRequest);
 		$result->execute();
 
-		return false;
+		return true;
 	}
 	catch (PDOException $e)
 	{
@@ -225,7 +235,7 @@ function deleteDB($table, $condition)
 	    exit_with_message("PDO error :" . explode("DETAIL: ", $e->getMessage())[1]);
 	}
 	
-	return true;
+	return false;
 }
 
 

@@ -7,8 +7,14 @@ function apartmentController($uri) {
     
     switch($_SERVER['REQUEST_METHOD']) {
         case 'GET':
-            exit_with_content($apartementService->getAllApartments());
-            //apartment_get($uri, $apartementService);
+
+            if($uri[3]){
+                exit_with_content($apartementService->getApartmentById($uri[3]));
+            }
+            else{
+                exit_with_content($apartementService->getAllApartments());
+            }
+            
             break;
 
         case 'POST':
@@ -20,7 +26,13 @@ function apartmentController($uri) {
             break;
 
         case 'DELETE':
-            apartment_delete($uri, $apartementService);
+            if($uri[3]){
+                exit_with_content($apartementService->deleteApartment($uri[3]));
+            }
+            else{
+                exit_with_message("ERROR : Plz specifie the id of the apartment you want to delete.");
+            }
+            
             break;
 
         default:        
