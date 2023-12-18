@@ -1,5 +1,5 @@
 <?php
-require_once '../Repository/apartmentRepository.php'; 
+include_once '../Repository/apartmentRepository.php'; 
 
 
 class AppartmentService {
