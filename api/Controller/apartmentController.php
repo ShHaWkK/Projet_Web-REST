@@ -3,7 +3,7 @@
 include_once './Models/apartmentService.php';
 
 function appartement_controller($uri) {
-    $apartementService = new ApartementService();
+    $apartementService = new ApartmentService();
     
     switch($_SERVER['REQUEST_METHOD']) {
         case 'GET':

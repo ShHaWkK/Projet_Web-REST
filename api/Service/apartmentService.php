@@ -11,12 +11,12 @@ class AppartmentService {
     }
 
     //Récupère tous les appartements
-    public function getAllApartements() {
+    public function getAllApartments() {
         return $this->apartmentRepository->getApartments();
     }
 
     //Récupère un appartement par son id
-    public function getApartementById($id_apartement) {
+    public function getApartmentById($id_apartement) {
         return $this->apartmentRepository->getApartment($id_apartement);
     }
 
