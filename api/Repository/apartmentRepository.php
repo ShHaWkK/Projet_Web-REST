@@ -45,7 +45,7 @@ class ApartmentRepository {
 
     
     public function addApartment(ApartmentModel $apartment){
-        insertDB("APARTMENT", ["id_apartement", "place", "address", "complement_address", "availability", "price_night", "area", "id_users"], [$apartment->id_apartement, $apartment->place, $apartment->address, $apartment->complement_address, $apartment->availability, $apartment->price_night, $apartment->area, $apartment->id_users]);
+        insertDB("APARTMENT", ["place", "address", "complement_address", "availability", "price_night", "area", "id_users"], [$apartment->place, $apartment->address, $apartment->complement_address, $apartment->availability, $apartment->price_night, $apartment->area, $apartment->id_users]);
 
         return getApartment($apartment->id_apartement);
     }
