@@ -20,7 +20,7 @@ La solution se sépare en plusieur parties :
 
 Le routeur est le composant du controlleur qui ici gère la dispertion des requêtes vers la ressource demandée.
 
-Il lis l'URL et redirige en fonction du chemin(`path`) de la requête reçue.
+Il lit l'URL et redirige en fonction du chemin(`path`) de la requête reçue.
 
 ### Le controlleur des To-Dos
 
