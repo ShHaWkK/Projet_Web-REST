@@ -167,10 +167,21 @@ function updateDB($table, $columnArray, $columData, $condition = null)
 
 	$db = connectDB();
 
-	$updatedData = $columnArray[0] . "=" . $columData[0];
-	for ($i=1; $i < count($columnArray) ; $i++) {
-		$updatedData .= ", " . $columnArray[$i] . "=" . $columData[$i];
+	var_dump(gettype($columData[0]));
+	//exit();
+
+	if (gettype($columData[0]) == "boolean") {
+	    $columData[0] == "1" ? $updatedData = $columnArray[0] . "=" . "true" : $updatedData = $columnArray[0] . "=" . "false";
 	}
+	else{
+		$updatedData = $columnArray[0] . "=" . $columData[0];
+		for ($i=1; $i < count($columnArray) ; $i++) {
+			$updatedData .= ", " . $columnArray[$i] . "=" . $columData[$i];
+		}
+	}
+
+	var_dump($updatedData);
+	exit();
 
 	if ($condition == -1){
 		$dbRequest = 'UPDATE '. $table .' SET ' . $updatedData;

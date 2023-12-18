@@ -58,11 +58,17 @@ class ApartmentRepository {
     }
 
     
-    public function updateApartment($id, $colunm, $values){
+    public function updateApartment($id_apartement, $colunm, $values){
         
-        updateDB("APARTMENT", $colunm, $values, "id_apartement=".$id);
+        if (updateDB("APARTMENT", $colunm, $values, "id_apartement=".$id_apartement)){
 
-        return getApartment($apartment->id_apartement); 
+            $tmp = new ApartmentRepository();
+            return $tmp->getApartment($id_apartement); 
+            //exit_with_message("Updated successful");
+        }
+        exit_with_message("Updated failed");
+
+        
     }
 }
 

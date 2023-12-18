@@ -4,8 +4,9 @@ include_once './Service/apartmentService.php';
 
 function apartmentController($uri) {
     $apartementService = new ApartmentService($uri);
-    
+
     switch($_SERVER['REQUEST_METHOD']) {
+
         case 'GET':
 
             if($uri[3]){
@@ -18,12 +19,29 @@ function apartmentController($uri) {
             break;
 
         case 'POST':
-            apartment_post($uri, $apartementService);
+            $jsonData = file_get_contents('php://input');
+            $data = json_decode($jsonData, true);
+
+            exit_with_content($apartementService->addApartment($data['id_apartement'], $data['place'], $data['address'], $data['complement_address'], $data['availability'], $data['price_night'], $data['area'], $data['id_users']));
             break;
 
-        case 'PATCH':
-            apartment_patch($uri, $apartementService);
+
+        case 'PUT':
+            $jsonData = file_get_contents('php://input');
+            $data = json_decode($jsonData, true);
+
+            exit_with_content($apartementService->updateApartment($data['id_apartement'], $data['place'], $data['address'], $data['complement_address'], $data['availability'], $data['price_night'], $data['area'], $data['id_users']));
             break;
+
+
+        case 'PATCH':
+
+            $jsonData = file_get_contents('php://input');
+            $data = json_decode($jsonData, true);
+
+            exit_with_content($apartementService->updateApartmentAvail($data["id_apartment"], $data["availability"]));
+            break;
+
 
         case 'DELETE':
             if($uri[3]){
@@ -34,6 +52,7 @@ function apartmentController($uri) {
             }
             
             break;
+
 
         default:        
             header("HTTP/1.1 200 OK");

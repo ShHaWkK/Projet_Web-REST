@@ -35,22 +35,31 @@ class ApartmentService {
     //Met à jour un appartement
     public function updateApartment($id_apartement, $place, $address, $complement_address, $availability, $price_night, $area) {
         $apartmentRepository = new ApartmentRepository();
-        $newApart = new ApartementModel($id_apartement, $place, $address);
-        return $apartmentRepository->updateUser($newApart);
+        $apartmentRepository->updateApartment($id_apartement, ["place", "address", "complement_address", "availability", "price_night", "area"], [$place, $address, $complement_address, $availability, $price_night, $area]);
+        return;
     }
 
+    
   	// Met à jour la disponibilte d'un appartement
     public function updateApartmentAvail($id_apartement, $availability) {
-        // Validation 
+        // Validation
+        if ($availability != true && $availability != false)
+        {
+            exit_with_message("You need to have a boolean to update the availability of the apartment");
+        }
         $apartmentRepository = new ApartmentRepository();
-        return $apartmentRepository->updateRole($id_apartement, $availability);
+        
+        $apartmentRepository->updateApartment($id_apartement, ["availability"], [$availability]);
+        return $apartmentRepository->getApartment($id_apartement);
     }
+    
 
 
     //Supprime un appartement
     public function deleteApartment($id_apartement) {
         $apartmentRepository = new ApartmentRepository();
-        return $apartmentRepository->deleteApartment($id_apartement);
+        $apartmentRepository->deleteApartment($id_apartement);
+        return;
     }
 
 }
