@@ -47,6 +47,10 @@ class ApartmentRepository {
     public function addApartment(ApartmentModel $apartment){
         insertDB("APARTMENT", ["place", "address", "complement_address", "availability", "price_night", "area", "id_users"], [$apartment->place, $apartment->address, $apartment->complement_address, $apartment->availability, $apartment->price_night, $apartment->area, $apartment->id_users]);
 
+        //SELECT * FROM APARTMENT WHERE id_apartment = (SELECT MAX(id_apartment) FROM APARTMENT WHERE id_users = 'your_user_id');
+        $maxID = selectDB('APARTMENT', MAX("id_apartement"), "id_users=".$apartment->id_users);
+        selectDB('APARTMENT', '*', "id_apartement=(".$maxID.")";
+
         return getApartment($apartment->id_apartement);
     }
 
