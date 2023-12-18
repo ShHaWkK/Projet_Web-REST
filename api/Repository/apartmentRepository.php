@@ -20,7 +20,7 @@ class ApartmentRepository {
     //-------------------------------------
 
     public function getApartments(){
-        $apartArray = selectDB("APARTMENT", "*");
+        $apartArray = selectDB("APARTMENT", "*", "apartment_index=1");
 
         $apart = [];
         $apartTest = [];
@@ -34,20 +34,23 @@ class ApartmentRepository {
 
     public function getApartment($id){
 
-        $apart = selectDB("APARTMENT", "*", "id_apartement=".$id);
+        $apart = selectDB("APARTMENT", "*", "id_apartement=".$id." AND apartment_index=1");
 
         return new ApartmentModel($apart[0]['id_apartement'], $apart[0]['place'], $apart[0]['address'], $apart[0]['complement_address'], $apart[0]['availability'], $apart[0]['price_night'], $apart[0]['area'], $apart[0]['id_users']);
     }
 
-    public function deleteApartment($id){
-        if(deleteDB("APARTMENT", "id_apartement=".$id)){
-            exit_with_message("Deleted successful");
+    public function unreferenceApartment($id){
+        if (updateDB("APARTMENT", ['apartment_index'], [-1], "id_apartement=".$id)){
+            exit_with_message("Unreferencement successful");
         }
         exit_with_message("Failed to delete");
     }
 
     
     public function addApartment(ApartmentModel $apartment){
+        if ($apartment->apartment_index != 1){
+            exit_with_message("You can't add a new unreferenced apartment");
+        }
         insertDB("APARTMENT", ["place", "address", "complement_address", "availability", "price_night", "area", "id_users"], [$apartment->place, $apartment->address, $apartment->complement_address, $apartment->availability, $apartment->price_night, $apartment->area, $apartment->id_users]);
 
         //SELECT * FROM APARTMENT WHERE id_apartment = (SELECT MAX(id_apartment) FROM APARTMENT WHERE id_users = 'your_user_id');

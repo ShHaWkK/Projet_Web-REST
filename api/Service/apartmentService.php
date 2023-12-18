@@ -25,9 +25,9 @@ class ApartmentService {
 
 
     //Créer un appartement
-    public function addApartment($id_appartement, $place, $address, $complement_address, $availability, $price_night, $area, $id_users) {
+    public function addApartment($id_appartement, $place, $address, $complement_address, $availability, $price_night, $area, $id_users, $apartment_index = 1) {
         $apartmentRepository = new ApartmentRepository();
-        $newApartment = new ApartmentModel(12, $place, $address, $complement_address, $availability, $price_night, $area, $id_users);
+        $newApartment = new ApartmentModel(12, $place, $address, $complement_address, $availability, $price_night, $area, $id_users, $apartment_index);
         
         $id_apprt = $apartmentRepository->addApartment($newApartment);
         return $apartmentRepository->getApartment($id_apprt[0]["id_apartement"]);
@@ -63,7 +63,7 @@ class ApartmentService {
     //Supprime un appartement
     public function deleteApartment($id_apartement) {
         $apartmentRepository = new ApartmentRepository();
-        $apartmentRepository->deleteApartment($id_apartement);
+        $apartmentRepository->unreferenceApartment($id_apartement);
         return;
     }
 

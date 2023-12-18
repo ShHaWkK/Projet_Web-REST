@@ -35,6 +35,10 @@ function apartmentController($uri) {
             $jsonData = file_get_contents('php://input');
             $data = json_decode($jsonData, true);
 
+            if (isset($data['apartment_index']) && $data["apartment_index"] == -1){
+                exit_with_message("You can't update the apartment index, user the DELETE methode to unreference it");
+            }
+
             exit_with_content($apartementService->updateApartment($uri[3], $data['place'], $data['address'], $data['complement_address'], $data['availability'], $data['price_night'], $data['area']));
             break;
 
