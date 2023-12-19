@@ -27,7 +27,7 @@ class ReservationRepository {
         $usersTest = [];
 
         for ($i=0; $i < count($reservationArray); $i++) { 
-            $reservation[$i] = new ReservationModel($reservationArray[$i]['id_reservation'], $reservationArray[$i]['date_entry'], $reservationArray[$i]['date_exit'], $reservationArray[$i]['price_stay'], $reservationArray[$i]['id_users']);
+            $reservation[$i] = new ReservationModel($reservationArray[$i]['id_reservation'], $reservationArray[$i]['date_entry'], $reservationArray[$i]['date_exit'], $reservationArray[$i]['price_stay'], $reservationArray[$i]['id_users'], $reservationArray[$i]['etat']);
         }
 
         return $reservation;
@@ -39,7 +39,7 @@ class ReservationRepository {
 
         $reservation = selectDB("RESERVATION", "*", "id_reservation=".$id)[0];
 
-        return new ReservationModel($reservation['id_reservation'], $reservation['date_entry'], $reservation['date_exit'], $reservation['price_stay'], $reservation['id_users']);
+        return new ReservationModel($reservation['id_reservation'], $reservation['date_entry'], $reservation['date_exit'], $reservation['price_stay'], $reservation['id_users'], $reservation['etat']);
     }
 
     //-------------------------------------
@@ -67,7 +67,7 @@ class ReservationRepository {
     
     public function updateReservation(UserModel $user){
         
-        updateDB("USERS", ["role"], [$user->role], 'id_users='.$user->id_users);
+        //updateDB("USERS", ["role"], [$user->role], 'id_users='.$user->id_users);
 
         return $this->getUser($user->id_users);
     }
@@ -75,7 +75,9 @@ class ReservationRepository {
     //-------------------------------------
 
     public function cancelReservation($id){
-        deleteDB("USERS", "id_users=".$id);
+        updateDB("RESERVATION", ["etat"], [-1], "id_reservation=".$id);
+        $data = selectDB("RESERVATION", "*", "id_reservation=".$id)[0];
+        return new ReservationModel($data["id_reservation"], $data["date_entry"], $data["date_exit"], $data["price_stay"], $data["id_users"], $data["etat"]);
     }
 
 

@@ -81,7 +81,7 @@ class ReservationService {
 
     public function cancelReservation($id) {
 
-        exit_with_message("Under construction..");
+        //exit_with_message("Under construction..");
         // Faut supprimer de to_book et de reservation....
         $reservationRepository = new reservationRepository();
         return $reservationRepository->cancelReservation($id);
