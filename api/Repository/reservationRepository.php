@@ -48,7 +48,7 @@ class ReservationRepository {
 
         $reservation = selectDB("TO_BOOK", "*", "id_reservation=".$id_reservation)[0];
 
-        return new ToBookModel($reservation['id_reservation'], $reservation['id_apartement']);
+        return new ToBookModel($reservation['id_apartement'], $reservation['id_reservation']);
     }
 
     //-------------------------------------
@@ -65,11 +65,11 @@ class ReservationRepository {
 
     //-------------------------------------
     
-    public function updateReservation(UserModel $user){
+    public function updateReservation($id_reservation, $etat){
         
-        //updateDB("USERS", ["role"], [$user->role], 'id_users='.$user->id_users);
+        updateDB("RESERVATION", ["etat"], [$etat], 'id_reservation='.$id_reservation);
 
-        return $this->getUser($user->id_users);
+        return $this->getReservation($id_reservation);
     }
 
     //-------------------------------------
@@ -77,7 +77,8 @@ class ReservationRepository {
     public function cancelReservation($id){
         updateDB("RESERVATION", ["etat"], [-1], "id_reservation=".$id);
         $data = selectDB("RESERVATION", "*", "id_reservation=".$id)[0];
-        return new ReservationModel($data["id_reservation"], $data["date_entry"], $data["date_exit"], $data["price_stay"], $data["id_users"], $data["etat"]);
+        exit_with_message("Unreferencement Succeed !");
+        //return new ReservationModel($data["id_reservation"], $data["date_entry"], $data["date_exit"], $data["price_stay"], $data["id_users"], $data["etat"]);
     }
 
 

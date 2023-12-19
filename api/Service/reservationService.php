@@ -35,7 +35,7 @@ class ReservationService {
 
         for ($i=0; $i < count($id_Reserv); $i++) { 
 
-            $tmp = selectDB("RESERVATION", "id_reservation, date_entry, date_exit, id_users", "id_reservation=".$id_Reserv[$i]["id_reservation"]." AND etat=1")[0];
+            $tmp = selectDB("RESERVATION", "id_reservation, date_entry, date_exit, id_users", "id_reservation=".$id_Reserv[$i]["id_reservation"]." AND etat=1", "bool")[0];
 
             if ($tmp){
 
@@ -47,28 +47,28 @@ class ReservationService {
                     if ($tmp["id_users"] != $ReservModel->id_users){
                         exit_with_message("Error : You can't reserv this appartment (id : ". $ReservModel->id_apartement ."), it already reserved during this period : ". $tmp["date_entry"] . " to " . $tmp["date_exit"]);
                     }
-                    exit_with_message("You already have booked this apartment at this time");
+                    exit_with_message("You already have booked this apartment at this time. Id_apartment : ".$ReservModel->id_apartement." id_reservation : ".$tmp["id_reservation"]);
                 }
 
                 if (strtotime($ReservModel->date_exit) >= strtotime($tmp["date_entry"]) && strtotime($ReservModel->date_exit) <= strtotime($tmp["date_exit"])){
                     if ($tmp["id_users"] != $ReservModel->id_users){
                         exit_with_message("Error : You can't reserv this appartment (id : ". $ReservModel->id_apartement ."), it already reserved during this period : ". $tmp["date_entry"] . " to " . $tmp["date_exit"]);
                     }
-                    exit_with_message("You already have booked this apartment at this time");
+                    exit_with_message("You already have booked this apartment at this time. Id_apartment : ".$ReservModel->id_apartement." id_reservation : ".$tmp["id_reservation"]);
                 }
 
                 if (strtotime($ReservModel->date_entry) <= strtotime($tmp["date_entry"]) && strtotime($ReservModel->date_exit) >= strtotime($tmp["date_exit"])){
                     if ($tmp["id_users"] != $ReservModel->id_users){    
                         exit_with_message("Error : You can't reserv this appartment (id : ". $ReservModel->id_apartement ."), it already reserved during this period : ". $tmp["date_entry"] . " to " . $tmp["date_exit"]);
                     }
-                    exit_with_message("You already have booked this apartment at this time");
+                    exit_with_message("You already have booked this apartment at this time. Id_apartment : ".$ReservModel->id_apartement." id_reservation : ".$tmp["id_reservation"]);
                 }
 
                 if (strtotime($ReservModel->date_entry) == strtotime($ReservModel->date_exit) ){
                     if ($tmp["id_users"] != $ReservModel->id_users){    
                         exit_with_message("Error : You can't reserv this appartment (id : ". $ReservModel->id_apartement .") just for one day, you need one night with it.");
                     }
-                    exit_with_message("You already have booked this apartment at this time");
+                    exit_with_message("You already have booked this apartment at this time. Id_apartment : ".$ReservModel->id_apartement." id_reservation : ".$tmp["id_reservation"]);
                 }
             }
         }
@@ -79,10 +79,12 @@ class ReservationService {
         return $reservationRepository->createReservation($ReservModel);
     }
 
-    public function cancelReservation($id) {
+    public function updateStateReservation($id, $etat) {
+        $reservationRepository = new reservationRepository();
+        return $reservationRepository->updateReservation($id, $etat);
+    }
 
-        //exit_with_message("Under construction..");
-        // Faut supprimer de to_book et de reservation....
+    public function cancelReservation($id) {
         $reservationRepository = new reservationRepository();
         return $reservationRepository->cancelReservation($id);
     }

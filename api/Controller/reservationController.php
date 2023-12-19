@@ -27,7 +27,7 @@ function ReservationController($uri) {
 
         // Create Reservation
         case 'POST':
-         	$reservationService = new ReservationService($uri);
+            $reservationService = new ReservationService($uri);
 
             $body = file_get_contents("php://input");
             $json = json_decode($body, true);
@@ -40,6 +40,29 @@ function ReservationController($uri) {
 
             // Valider les données reçues ici
             exit_with_content($reservationService->createReservation($reservModel));
+
+            break;
+
+
+         // Create Reservation
+        case 'PATCH':
+            $reservationService = new ReservationService($uri);
+
+            $body = file_get_contents("php://input");
+            $json = json_decode($body, true);
+
+            if (!isset($json["etat"])){
+                exit_with_message("Plz give the state of the reservation");
+            }
+            if(gettype($json["etat"]) != "integer"){
+                exit_with_message("Plz give an integer. You can't go back after have updated the state of the reservation.");
+            }
+            if ($json["etat"] != 2){
+                exit_with_message("You can't update the state of the reservation as 'not took nor canceled (plz use DELETE METHOD)' : 1 => reserved, 2 => took, -1 => canceled");
+            }
+
+            // Valider les données reçues ici
+            exit_with_content($reservationService->updateStateReservation($uri[3], $json["etat"]));
 
             break;
 
