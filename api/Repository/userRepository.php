@@ -20,14 +20,20 @@ class UserRepository {
     
     //-------------------------------------
 
-    public function getUsers(){
-        $usersArray = selectDB("USERS", "*");
+    public function getUsers($index = 1){
+        if($index == 1){
+            $usersArray = selectDB("USERS", "*", "user_index=".$index);
+        }
+        else{
+            // If admin request all the users
+            $usersArray = selectDB("USERS", "*");
+        }
 
         $user = [];
         $usersTest = [];
 
         for ($i=0; $i < count($usersArray); $i++) { 
-            $user[$i] = new UserModel($usersArray[$i]['id_users'], $usersArray[$i]['role'], $usersArray[$i]['apiKey']);
+            $user[$i] = new UserModel($usersArray[$i]['id_users'], $usersArray[$i]['role'], $usersArray[$i]['pseudo'], $usersArray[$i]['user_index'], $usersArray[$i]['apiKey']);
         }
 
         return $user;
@@ -39,31 +45,42 @@ class UserRepository {
 
         $user = selectDB("USERS", "*", "id_users=".$id);
 
-        return new UserModel($user[0]['id_users'], $user[0]['role'], $user[0]['apiKey']);
+        return new UserModel($user[0]['id_users'], $user[0]['role'], $user[0]['pseudo'], $user[0]['user_index'], $user[0]['apiKey']);
     }
 
     //-------------------------------------
 
-    public function deleteUser($id){
-        deleteDB("USERS", "id_users=".$id);
-    }
+    public function getUserApi($api){
 
-    //-------------------------------------
-    
-    public function updateUser(UserModel $user){
-        
-        updateDB("USERS", ["role"], [$user->role], 'id_users='.$user->id_users);
+        $user = selectDB("USERS", "*", "apiKey=".$api);
 
-        return $this->getUser($user->id_users);
+        return new UserModel($user[0]['id_users'], $user[0]['role'], $user[0]['pseudo'], $user[0]['user_index'], $user[0]['apiKey']);
     }
 
     //-------------------------------------
     
     public function createUser(UserModel $user){
-        insertDB("USERS", ["role", "apiKey"], [$user->role, $user->apiKey]);
+        $tmp = insertDB("USERS", ["role", "user_index", "pseudo", "apiKey"], [$user->role, 1, $user->pseudo, $user->apiKey] );// , "apiKey='".$user->apiKey."'");
+        
+        return selectDB('USERS', '*', 'user_index=1 ORDER BY id_users DESC LIMIT 1')[0];//$this->getUserApi($user->apiKey);
+    }
+
+    //-------------------------------------
+
+    public function updateUser(UserModel $user){
+        
+        updateDB("USERS", ["role", "pseudo", "user_index"], [$user->role, $user->pseudo, $user->user_index], 'id_users='.$user->id_users);
 
         return $this->getUser($user->id_users);
     }
+
+    //-------------------------------------
+
+    public function unreferenceUser($id){
+        return updateDB("USERS", ['user_index'], [-1], "id_users=".$id);
+        //deleteDB("USERS", "id_users=".$id);
+    }
+    
 
 }
 

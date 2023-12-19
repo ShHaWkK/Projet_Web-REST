@@ -16,6 +16,12 @@ class UserService {
     */
     public function getAllUsers() {
         $userRepository = new UserRepository();
+
+        /*
+        if (admin){
+            return $userRepository->getUsers(0);
+        }
+        */
         return $userRepository->getUsers();
     }
 
@@ -32,9 +38,9 @@ class UserService {
      *  Créer un utilisateur
     */
 
-    public function createUser($role) {
+    public function createUser($role, $pseudo) {
         $userRepository = new UserRepository();
-        $newUser = new UserModel(12, $role, null);
+        $newUser = new UserModel(12, $role, $pseudo);
         return $userRepository->createUser($newUser);
     }
 
@@ -42,9 +48,9 @@ class UserService {
      *  Met à jour un utilisateur
     */
 
-    public function updateUser($id_users, $role) {
+    public function updateUser($id_users, $role, $pseudo, $user_index) {
         $userRepository = new UserRepository();
-        $newUser = new UserModel($id_users, $role, null);
+        $newUser = new UserModel($id_users, $role, $pseudo, $user_index, null);
         return $userRepository->updateUser($newUser);
     }
 
@@ -54,7 +60,9 @@ class UserService {
     */
     public function deleteUser($id) {
         $userRepository = new UserRepository();
-        return $userRepository->deleteUser($id);
+        if ($userRepository->unreferenceUser($id)){
+            exit_with_message("Unreference Succeed !");
+        }
     }
 
 
