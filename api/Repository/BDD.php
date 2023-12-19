@@ -95,6 +95,9 @@ function selectDB($table, $colums, $condition = -1, $additionnalMessage = NULL){
 			if ($additionnalMessage == NULL || $additionnalMessage == "-@"){
 				exit_with_message("ERROR : Impossible to select data");
 			}
+			elseif($additionnalMessage == "bool"){
+				return false;
+			}
 			else{
 				exit_with_message("ERROR : Impossible to select data ".$additionnalMessage);
 			}
