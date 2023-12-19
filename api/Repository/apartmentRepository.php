@@ -26,7 +26,7 @@ class ApartmentRepository {
         $apartTest = [];
 
         for ($i=0; $i < count($apartArray); $i++) { 
-            $apartTest[$i] = new ApartmentModel($apartArray[$i]['id_apartement'], $apartArray[$i]['place'], $apartArray[$i]['address'], $apartArray[$i]['complement_address'], $apartArray[$i]['availability'], $apartArray[$i]['price_night'], $apartArray[$i]['area'], $apartArray[$i]['id_users']);
+            $apartTest[$i] = new ApartmentModel($apartArray[$i]['id_apartement'], $apartArray[$i]['place'], $apartArray[$i]['address'], $apartArray[$i]['complement_address'], $apartArray[$i]['availability'], $apartArray[$i]['price_night'], $apartArray[$i]['area'], $apartArray[$i]['id_users'], $apartArray[$i]['apartment_index']);
         }
 
         return $apartTest;
@@ -36,7 +36,7 @@ class ApartmentRepository {
 
         $apart = selectDB("APARTMENT", "*", "id_apartement=".$id." AND apartment_index=1");
 
-        return new ApartmentModel($apart[0]['id_apartement'], $apart[0]['place'], $apart[0]['address'], $apart[0]['complement_address'], $apart[0]['availability'], $apart[0]['price_night'], $apart[0]['area'], $apart[0]['id_users']);
+        return new ApartmentModel($apart[0]['id_apartement'], $apart[0]['place'], $apart[0]['address'], $apart[0]['complement_address'], $apart[0]['availability'], $apart[0]['price_night'], $apart[0]['area'], $apart[0]['id_users'], $apart[0]['apartment_index']);
     }
 
     public function unreferenceApartment($id){
@@ -51,7 +51,7 @@ class ApartmentRepository {
         if ($apartment->apartment_index != 1){
             exit_with_message("You can't add a new unreferenced apartment");
         }
-        insertDB("APARTMENT", ["place", "address", "complement_address", "availability", "price_night", "area", "id_users"], [$apartment->place, $apartment->address, $apartment->complement_address, $apartment->availability, $apartment->price_night, $apartment->area, $apartment->id_users]);
+        insertDB("APARTMENT", ["place", "address", "complement_address", "availability", "price_night", "area", "id_users", "apartment_index"], [$apartment->place, $apartment->address, $apartment->complement_address, $apartment->availability, $apartment->price_night, $apartment->area, $apartment->id_users, $apartment->apartment_index]);
 
         //SELECT * FROM APARTMENT WHERE id_apartment = (SELECT MAX(id_apartment) FROM APARTMENT WHERE id_users = 'your_user_id');
         $maxID = selectDB('APARTMENT', 'MAX("id_apartement")', "id_users=".$apartment->id_users)[0]['max'];
