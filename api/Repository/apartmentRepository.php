@@ -40,10 +40,16 @@ class ApartmentRepository {
     }
 
     public function unreferenceApartment($id){
-        if (updateDB("APARTMENT", ['apartment_index'], [-1], "id_apartement=".$id)){
-            exit_with_message("Unreferencement successful");
+        if(selectDB("APARTMENT", "*", "id_apartement=".$id." AND apartment_index=1", "bool")){
+            if (updateDB("APARTMENT", ['apartment_index'], [-1], "id_apartement=".$id)){
+                exit_with_message("Unreferencement successful");
+            }
+            exit_with_message("Failed to delete");
         }
-        exit_with_message("Failed to delete");
+        exit_with_message("This apartment doesn't exist or is already unreferenced..");
+        
+        exit();
+        
     }
 
     
