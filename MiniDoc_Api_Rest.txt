@@ -1,0 +1,25 @@
+MiniDoc:
+USERS
+role:
+1:Admin
+2:Interne
+3:propriétaire
+4:client
+
+user_index
+-1: pas référencé
+1 : référencé
+
+apikey est cree en hash sha256 (id_user.pseudo)
+
+
+APARTMENT
+apartment_index:
+-1: pas référencé
+1 : référencé
+
+RESERVATION
+etat:
+1:pas occupe
+2:occupe
+-1:annulé
