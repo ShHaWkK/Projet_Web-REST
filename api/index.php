@@ -67,11 +67,11 @@ function controller($uri) {
             break;
 
         case 'apartment':
-            apartmentController($uri, $role);
+            apartmentController($uri, $apiKey);
             break;
 
         case 'reservation':
-            reservationController($uri, $role);
+            reservationController($uri, $apiKey);
             break;
 
         default:

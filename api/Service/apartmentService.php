@@ -46,7 +46,7 @@ class ApartmentService {
 
     
   	// Met à jour la disponibilte d'un appartement
-    public function updateApartmentAvail($id_apartement, $availability) {
+    public function updateApartmentAvail($id_apartement, $availability, $apikey) {
         // Validation
         if ($availability != true && $availability != false)
         {
@@ -54,16 +54,17 @@ class ApartmentService {
         }
         $apartmentRepository = new ApartmentRepository();
 
-        $apartmentRepository->updateApartment($id_apartement, ["availability"], [$availability]);
+        $apartmentRepository->updateApartment($id_apartement, ["availability"], [$availability], $apikey);
+
         return $apartmentRepository->getApartment($id_apartement);
     }
     
 
 
     //Supprime un appartement
-    public function deleteApartment($id_apartement) {
+    public function deleteApartment($id_apartement, $apikey) {
         $apartmentRepository = new ApartmentRepository();
-        $apartmentRepository->unreferenceApartment($id_apartement);
+        $apartmentRepository->unreferenceApartment($id_apartement, $apikey);
         return;
     }
 

@@ -237,7 +237,6 @@ function updateDB($table, $columnArray, $columnData, $condition = null)
 	else{
 		$dbRequest = 'UPDATE '. $table .' SET ' . $updatedData .'  WHERE ' . $condition ;
 	}
-
 	try{
 		$result = $db->prepare($dbRequest);
 		$result->execute();

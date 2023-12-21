@@ -36,11 +36,17 @@ class UserRepository {
 
     public function getUser($id, $apiKey){
 
-        if($apiKey != null){
-            $user = selectDB("USERS", "*", "id_users=".$id." AND apikey='".$apiKey."'");
+        $role = getRoleFromApiKey($apiKey);
+
+        if($apiKey != null && $role > 2){
+            $user = selectDB("USERS", "*", "id_users=".$id." AND apikey='".$apiKey."'", "bool");
         }
-        else{
+        elseif ($role < 3){
             $user = selectDB("USERS", "*", "id_users=".$id);
+        }
+
+        if ($user == false){
+            exit_with_message("Error, you can't have any information for this user, it's not you :/");
         }
 
         return new UserModel($user[0]['id_users'], $user[0]['role'], $user[0]['pseudo'], "hidden", $user[0]['user_index'], $user[0]['apikey']);

@@ -27,21 +27,38 @@ class ApartmentRepository {
 
     public function getApartment($id){
 
-        $apart = selectDB("APARTMENT", "*", "id_apartement=".$id." AND apartment_index=1");
+        if(selectDB("APARTMENT", "*", "id_apartement=".$id." AND apartment_index=1", "bool")){
+            $apart = selectDB("APARTMENT", "*", "id_apartement=".$id." AND apartment_index=1", "-@");
+        }
+        else{
+            exit_with_message("The apart is unreferenced");
+        }
 
         return new ApartmentModel($apart[0]['id_apartement'], $apart[0]['place'], $apart[0]['address'], $apart[0]['complement_address'], $apart[0]['availability'], $apart[0]['price_night'], $apart[0]['area'], $apart[0]['id_users'], $apart[0]['apartment_index']);
     }
 
-    public function unreferenceApartment($id){
-        if(selectDB("APARTMENT", "*", "id_apartement=".$id." AND apartment_index=1", "bool")){
+    public function unreferenceApartment($id, $apikey){
+
+        $role = getRoleFromApiKey($apikey);
+
+        $iduser = selectDB("USERS", "id_users", "apikey='".$apikey."'")[0]["id_users"];
+
+        if(!selectDB("APARTMENT", "id_users", "id_users='".$iduser."'", "bool") && $role > 3)
+        {
+            exit_with_message("You can't unreference an apartment if you're not the owner or a modo or an admin");
+        }
+
+
+        if(selectDB("APARTMENT", "*", "id_apartement=".$id." AND apartment_index=1 AND id_users=".$iduser, "bool")){
             if (updateDB("APARTMENT", ['apartment_index'], [-1], "id_apartement=".$id)){
                 exit_with_message("Unreferencement successful");
             }
             exit_with_message("Failed to delete");
         }
+        else{
+            exit_with_message("This apartment doesn't exist or is already unreferenced.. / You can't unreferenced an apartment, if your not the owner of it");
+        }
         exit_with_message("This apartment doesn't exist or is already unreferenced..");
-        
-        exit();
         
     }
 
@@ -58,17 +75,34 @@ class ApartmentRepository {
     }
 
     
-    public function updateApartment($id_apartement, $colunm, $values){
-
-        // var_dump($colunm);
-        // var_dump($values);
-        //exit();
+    public function updateApartment($id_apartement, $colunm, $values, $apikey){
         
+        $role = getRoleFromApiKey($apikey);
+
+        if ($role > 2){
+            if (selectDB("USERS", 'id_users', "apikey='".$apikey."'", "bool"))
+            {
+                $iduser = selectDB("USERS", 'id_users', "apikey='".$apikey."'", "bool")[0]['id_users'];
+                if(!selectDB('APARTMENT', 'id_users', "id_apartement=".$id_apartement." AND id_users=".$iduser, "bool"))
+                {
+                    exit_with_message("It's not your apart..");
+                }
+            }
+            else{
+                exit_with_message("It's not your apart..");
+            }
+
+            if (updateDB("APARTMENT", $colunm, $values, "id_apartement=".$id_apartement)){
+
+                return true;
+            }
+        }
+        
+
         
         if (updateDB("APARTMENT", $colunm, $values, "id_apartement=".$id_apartement)){
 
             return true;
-            //exit_with_message("Updated successful");
         }
         exit_with_message("Updated failed");
         

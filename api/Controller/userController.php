@@ -19,7 +19,7 @@ function userController($uri, $apiKey) {
                 exit_with_content($userService->getUserById($uri[3], $apiKey));
             }
             elseif($uri[3] && $role == 1){
-                exit_with_content($userService->getUserById($uri[3]));
+                exit_with_content($userService->getUserById($uri[3], $apiKey));
             }
             elseif(!$uri[3] && $role == 1){
                 exit_with_content($userService->getAllUsers());
