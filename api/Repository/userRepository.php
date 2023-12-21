@@ -25,8 +25,14 @@ class UserRepository {
         $user = [];
         $usersTest = [];
 
-        for ($i=0; $i < count($usersArray); $i++) { 
-            $user[$i] = new UserModel($usersArray[$i]['id_users'], $usersArray[$i]['role'], $usersArray[$i]['pseudo'], "hidden", $usersArray[$i]['user_index'], $usersArray[$i]['apikey']);
+        for ($i=0; $i < count($usersArray); $i++) {
+
+            if ($role < 2){
+                $user[$i] = new UserModel($usersArray[$i]['id_users'], $usersArray[$i]['role'], $usersArray[$i]['pseudo'], "hidden", $usersArray[$i]['user_index'], $usersArray[$i]['apikey']);
+            }
+            else{
+                $user[$i] = new UserModel($usersArray[$i]['id_users'], $usersArray[$i]['role'], $usersArray[$i]['pseudo'], "hidden", $usersArray[$i]['user_index'], "hidden");
+            }
         }
 
         return $user;
