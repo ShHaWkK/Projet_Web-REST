@@ -66,21 +66,15 @@ function controller($uri) {
             break;
 
         case 'user':
-            if ($role == true){
-                exit_with_message("You need to have an apikey");
-            }
             userController($uri, $apiKey);
             break;
 
         case 'apartment':
-            if ($role == true){
-                exit_with_message("You need to have an apikey");
-            }
             apartmentController($uri, $apiKey);
             break;
 
         case 'reservation':
-            if ($role == true){
+            if ($apiKey == false){
                 exit_with_message("You need to have an apikey");
             }
             reservationController($uri, $apiKey);

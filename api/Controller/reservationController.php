@@ -5,7 +5,7 @@ include_once './exceptions.php';
 
 
 
-function ReservationController($uri, $apikey) {
+function reservationController($uri, $apikey) {
 
     if ($apikey == null){
         exit_with_message("You need to be connected (have an apikey) to book an apart.");
