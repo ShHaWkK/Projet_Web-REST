@@ -21,6 +21,42 @@ class ReservationService {
         return $reservationRepository->getReservation($id);
     }
 
+    public function getAllReservationsForUser($apikey){
+        
+        $role = getRoleFromApiKey($apikey);
+        $id_user = selectDB("USERS", "id_users", "apikey='".$apikey."'")[0]["apikey"];
+
+        if ($role == 3){
+            $id_apart = selectDB("APARTMENT", 'id_apartement', "id_users=".$id_user);
+            $returnApart = [];
+            $apartModel = ;
+
+            for ($i=0; $i < count($id_apart) ; $i++){ 
+
+                if(selectDB("RESERVATION", "*", "id_apartement=".$id_apart[$i]["id_apartement"], "bool")){
+                    $tmp = selectDB("RESERVATION", "*", "id_apartement=".$id_apart[$i]["id_apartement"], "bool");
+
+                    $returnApart[$i] = [new ApartmentModel($id_apart[$i]["id_apartement"], $id_apart[$i]["place"], $id_apart[$i]["address"], $id_apart[$i]["complement_address"], $id_apart[$i]["availability"], $id_apart[$i]["price_night"], $id_apart[$i]["area"], $id_apart[$i]["id_users"], $id_apart[$i]["apartment_index"]), $tmp];
+                }
+
+            }
+            return $returnApart;
+        }
+
+        /*
+        if($role == 4){
+            $id_apart = selectDB("RESERVATION", 'id_apartement', "id_users=".$id_user);
+            $returnApart = [];
+            $apartModel = ;
+            for ($i=0; $i < count($id_apart) ; $i++){ 
+                $returnApart[$i] = new ApartmentModel($id_apart[$i]["id_apartement"], $id_apart[$i]["place"], $id_apart[$i]["address"], $id_apart[$i]["complement_address"], $id_apart[$i]["availability"], $id_apart[$i]["price_night"], $id_apart[$i]["area"], $id_apart[$i]["id_users"], $id_apart[$i]["apartment_index"]);
+
+            }
+            return $returnApart;
+        }
+        */
+    }
+
     public function getToBookIdApartment($id_reservation){
         $reservationRepository = new ReservationRepository();
         return $reservationRepository->getToBook($id_reservation);

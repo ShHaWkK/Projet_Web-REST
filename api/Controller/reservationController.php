@@ -24,8 +24,14 @@ function reservationController($uri, $apikey) {
                 $tmp = $reservationService->getReservationById($uri[3]);                
                 exit_with_content([$tmp, $reservationService->getToBookIdApartment($tmp->id_reservation)]);
             }
-            else{
+            elseif($role > 2){
+                exit_with_content($reservationService->getAllReservationsForUser($apikey));
+            }
+            elseif($role < 2){
                 exit_with_content($reservationService->getAllReservations());
+            }
+            else{
+                exit_with_message("Bouh ! (Ca rime avec chelou). Tu es dans un endroit un peu bizarre");
             }
             
             break;
