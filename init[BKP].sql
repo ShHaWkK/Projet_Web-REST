@@ -1,37 +1,80 @@
-
 CREATE TABLE USERS(
-    id_users INT AUTO_INCREMENT,
-    role INT NOT NULL,
-    PRIMARY KEY(id_users)
+   id_users SERIAL PRIMARY KEY,
+   role INT NOT NULL,
+   pseudo VARCHAR(50) NOT NULL UNIQUE,
+   user_index INT NOT NULL DEFAULT 1,
+   apiKey VARCHAR(250),
+   mdp VARCHAR(250) NOT NULL
 );
 
 CREATE TABLE APARTMENT(
-    id_apartement INT,
-    place INT NOT NULL,
-    address VARCHAR(50) NOT NULL,
-    complement_address VARCHAR(50),
-    availability LOGICAL NOT NULL,
-    price_night DECIMAL(15,2) NOT NULL,
-    area INT NOT NULL,
-    id_users INT NOT NULL,
-    PRIMARY KEY(id_apartement),
-    FOREIGN KEY(id_users) REFERENCES USERS(id_users)
+   id_apartement SERIAL PRIMARY KEY,
+   place INT NOT NULL,
+   address VARCHAR(50) NOT NULL,
+   complement_address VARCHAR(50),
+   availability BOOLEAN NOT NULL,
+   price_night DECIMAL(15,2) NOT NULL,
+   area INT NOT NULL,
+   apartment_index INT NOT NULL DEFAULT 1,
+   id_users INT NOT NULL,
+   FOREIGN KEY(id_users) REFERENCES USERS(id_users)
 );
 
 CREATE TABLE RESERVATION(
-    id_reservation INT,
-    date_entry DATE NOT NULL,
-    date_exit DATE NOT NULL,
-    price_stay DECIMAL(15,2) NOT NULL,
-    id_users INT NOT NULL,
-    PRIMARY KEY(id_reservation),
-    FOREIGN KEY(id_users) REFERENCES USERS(id_users)
+   id_reservation SERIAL PRIMARY KEY,
+   date_entry DATE NOT NULL,
+   date_exit DATE NOT NULL,
+   price_stay DECIMAL(15,2) NOT NULL,
+   etat INT NOT NULL DEFAULT 1,
+   id_users INT NOT NULL,
+   FOREIGN KEY(id_users) REFERENCES USERS(id_users)
 );
 
 CREATE TABLE TO_BOOK(
-    id_apartement INT,
-    id_reservation INT,
-    PRIMARY KEY(id_apartement, id_reservation),
-    FOREIGN KEY(id_apartement) REFERENCES APARTMENT(id_apartement),
-    FOREIGN KEY(id_reservation) REFERENCES RESERVATION(id_reservation)
+   id_apartement INT,
+   id_reservation INT,
+   PRIMARY KEY(id_apartement, id_reservation),
+   FOREIGN KEY(id_apartement) REFERENCES APARTMENT(id_apartement),
+   FOREIGN KEY(id_reservation) REFERENCES RESERVATION(id_reservation)
 );
+
+INSERT INTO USERS (role, pseudo, user_index, apikey, mdp) 
+VALUES (1, 'marcdubled', 1, '1582C0CF7CB8B8A4B834D9A8387BC24C7520E69EE1FD7B4A090115454A2E1D67', '03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4'), 
+       (2, 'alex', 1, 'eddf89d1dcd698164f86e8c78406e69f0bb0682832e9f1c07e5c3c8bf57a8f6d', '03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4'), 
+       (3,'stud', 1, 'ff1efb5f533967404dc56956d66246e0f538405e93c07b9c14cbe2726ac42f44', '03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4'), 
+       (4, 'marmarquic', 1 , '88560e8c740ed0ce1d3b40c9b9daf19d83af17ea091028fab745ef373bfa394f', '03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4'), 
+       (2, 'momomo', 1, 'b71d91cde4e725798f25599617ed45a7c1aefe1d98d29b54a08b4f4a8b4d5666', '03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4'), 
+       (3,'stilo', 1,'3d14c4ef2ef328e54e9358b1f3fccd63e8a1b521135e3c84fdf11bb76040a2bc', '03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4'), 
+       (1, 'leli', 1, '09dd730839414c2f5871e7ba9871d2b91acf6688343309803f7f7d46e4814a6e', '03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4'), 
+       (2, 'farar', 1, 'be1918087c7399697d8a8d2185224ee97ec300a9b1e8fda7253a482900e616ef', '03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4'), 
+       (3,'riolis', 1, 'ab883dcfeb78e99134070e3052e76d3087494f489f016b249056e4cedec16003', '03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4'), 
+       (4, 'loin', 1, 'fb7fe7731cfc1d633e9c0b8d4d78a0fe8010d31a6937e90c667eefd1df0e61cd', '03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4'), 
+       (2, 'mattt', 1, '3c920d8f2ccf7db94d0a231dd4cc847bce682d1769bc19c96bfabddab527cf51','03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4');
+
+INSERT INTO APARTMENT (place, address, complement_address, availability, price_night, area, id_users) 
+VALUES (1, '123 Main Street', 'Apt 101', TRUE, 150.00, 100, 1), 
+       (2, '456 Elm Street', 'Apt 202', TRUE, 200.00, 120, 2), 
+       (3, '789 Oak Street', 'Apt 303', FALSE, 100.00, 80, 3), 
+       (4, '012 Pine Street', 'Apt 404', TRUE, 180.00, 150, 5), 
+       (5, '345 Cedar Street', 'Apt 505', FALSE, 120.00, 90, 6), 
+       (6, '678 Maple Street', 'Apt 606', TRUE, 220.00, 130, 7), 
+       (7, '901 Birch Street', 'Apt 707', TRUE, 170.00, 110, 3), 
+       (8, '234 Walnut Street', 'Apt 808', FALSE, 130.00, 70, 7), 
+       (9, '567 Cherry Street', 'Apt 909', TRUE, 250.00, 140, 3), 
+       (10, '890 Sycamore Street', 'Apt 1010', FALSE, 110.00, 100, 2);
+
+INSERT INTO RESERVATION (date_entry, date_exit, price_stay, id_users) 
+VALUES ('2023-12-01', '2023-12-08', 500.00, 3), 
+       ('2023-12-02', '2023-12-09', 600.00, 4), 
+       ('2023-12-03', '2023-12-10', 700.00, 7), 
+       ('2023-12-04', '2023-12-11', 800.00, 8), 
+       ('2023-12-05', '2023-12-12', 900.00, 9), 
+       ('2023-12-06', '2023-12-13', 1000.00, 10), 
+       ('2023-12-07', '2023-12-14', 1100.00, 3), 
+       ('2023-12-08', '2023-12-15', 1200.00, 4), 
+       ('2023-12-09', '2023-12-16', 1300.00, 8), 
+       ('2023-12-10', '2023-12-17', 1400.00, 10);
+
+
+INSERT INTO TO_BOOK (id_apartement, id_reservation) 
+VALUES (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10);

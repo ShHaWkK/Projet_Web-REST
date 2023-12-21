@@ -1,0 +1,36 @@
+MiniDoc:
+USERS
+role:
+1:Admin
+2:Interne
+3:propriétaire
+4:client
+
+user_index
+-1: pas référencé
+1 : référencé
+
+apikey est cree en hash sha256 (id_user.pseudo)
+
+
+APARTMENT
+apartment_index:
+-1: pas référencé
+1 : référencé
+
+RESERVATION
+etat:
+1:pas occupe
+2:occupe //mis a jour par le client pour dire que celuil qui as reservé est bien arrivé
+-1:annulé
+
+
+Mot de passe pour tous le utilisateurs :
+- 1234
+
+
+Clé d'API de test : 
+Admin (user 1) : 1582C0CF7CB8B8A4B834D9A8387BC24C7520E69EE1FD7B4A090115454A2E1D67
+Modo (user 2) : eddf89d1dcd698164f86e8c78406e69f0bb0682832e9f1c07e5c3c8bf57a8f6d
+Proprio (user 3) : ff1efb5f533967404dc56956d66246e0f538405e93c07b9c14cbe2726ac42f44
+Client (user 4) : 88560e8c740ed0ce1d3b40c9b9daf19d83af17ea091028fab745ef373bfa394f 
