@@ -5,7 +5,13 @@ include_once './exceptions.php';
 
 
 
-function ReservationController($uri) {
+function ReservationController($uri, $apikey) {
+
+    if ($apikey == null){
+        exit_with_message("You need to be connected (have an apikey) to book an apart.");
+    }
+
+    $role = getRoleFromApiKey($apikey);
     
     switch ($_SERVER['REQUEST_METHOD']) {
 
@@ -27,6 +33,11 @@ function ReservationController($uri) {
 
         // Create Reservation
         case 'POST':
+
+            if($role != 4){
+                exit_with_message("You can't book, unless if your client");
+            }
+
             $reservationService = new ReservationService($uri);
 
             $body = file_get_contents("php://input");
@@ -44,8 +55,14 @@ function ReservationController($uri) {
             break;
 
 
-         // Create Reservation
+         // Update the state of the reservation
         case 'PATCH':
+
+            // Only
+            if($role != 4){
+                exit_with_message("Casse burnes");
+            }
+
             $reservationService = new ReservationService($uri);
 
             $body = file_get_contents("php://input");
@@ -62,7 +79,7 @@ function ReservationController($uri) {
             }
 
             // Valider les données reçues ici
-            exit_with_content($reservationService->updateStateReservation($uri[3], $json["etat"]));
+            exit_with_content($reservationService->updateStateReservation($uri[3], $json["etat"], $apikey));
 
             break;
 
@@ -70,8 +87,13 @@ function ReservationController($uri) {
         // Cancel Reservation
         case 'DELETE':
             // Gestion des requêtes DELETE pour supprimer
+
+            if($role == 3){
+                exit_with_message("Plz ask an admin to cancel a client reservation");
+            }
+
             $reservationService = new ReservationService($uri);
-            exit_with_content($reservationService->cancelReservation($uri[3]));
+            exit_with_content($reservationService->cancelReservation($uri[3], $apikey));
             break;
 
         default:

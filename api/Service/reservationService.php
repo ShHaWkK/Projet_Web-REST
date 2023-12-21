@@ -79,14 +79,26 @@ class ReservationService {
         return $reservationRepository->createReservation($ReservModel);
     }
 
-    public function updateStateReservation($id, $etat) {
+    public function updateStateReservation($id, $etat, $apikey){
+
+        if(selecDB("USERS", "id_user", "apikey='".$apikey."'", "bool")){
+            $id_user = selecDB("USERS", "id_user", "apikey='".$apikey."'")[0]['id_users'];
+        }
+        else{
+            exit_with_message("What a strange place...");
+        }
+
+        if(selectDB("RESERVATION",["etat"],[2], "id_users=".$id_user)){
+
+        }
+
         $reservationRepository = new reservationRepository();
         return $reservationRepository->updateReservation($id, $etat);
     }
 
-    public function cancelReservation($id) {
+    public function cancelReservation($id, $apikey) {
         $reservationRepository = new reservationRepository();
-        return $reservationRepository->cancelReservation($id);
+        return $reservationRepository->cancelReservation($id, $apikey);
     }
     
 }

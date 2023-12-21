@@ -67,11 +67,29 @@ class ReservationRepository {
 
     //-------------------------------------
 
-    public function cancelReservation($id){
+    public function cancelReservation($id, $apikey){
+
+
+        $role_deleter = getRoleFromApiKey($apikey);
+
+        $id_user_deleter = selectDB("USERS", "id_users", "apikey='".$apikey."'");
+
+        if($role_deleter == 3){
+            //Vérif de m****
+            if(selectDB('APARTMENT', "*", "id_users=".$id_user_deleter, "bool")){
+                $id_apartement = selectDB('APARTMENT', "*", "id_users=".$id_user_deleter)[0]["id_apartement"];
+            }
+
+            if($id_apartement != $id){
+                exit_with_message("Bah kes tu fou mon reuf, pourquoi tu veux cancel une reservation qui n'est pas à toi ?");
+            }
+        }
+
+        // Execute les trucs
         updateDB("RESERVATION", ["etat"], [-1], "id_reservation=".$id);
         $data = selectDB("RESERVATION", "*", "id_reservation=".$id)[0];
         exit_with_message("Unreferencement Succeed !");
-        //return new ReservationModel($data["id_reservation"], $data["date_entry"], $data["date_exit"], $data["price_stay"], $data["id_users"], $data["etat"]);
+
     }
 
 
@@ -79,4 +97,114 @@ class ReservationRepository {
 }
 
 
+
+// Ps : c'est pas Chat GPT
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Vraiment hein
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Non, je force pas
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// C'est une vanne lol.
 ?>
