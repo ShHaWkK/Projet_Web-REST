@@ -8,7 +8,14 @@ class UserRepository {
 
     // I'm not sure about this function lol (unuse)
     function __construct() {
-       
+        try {
+            $this->connection = pg_connect("host=restpastropapi-database-1 port=5432 dbname=apiDev_db user=apiDev password=password");
+            if (  $this->connection == null ) {
+                throw new BDDException("Could not connect to database.");
+            }
+        } catch (Exception $e) {
+            throw new BDDException("Could not connect db: ". $e->getMessage());
+        }
     }
     
     //-------------------------------------
@@ -26,7 +33,7 @@ class UserRepository {
         $usersTest = [];
 
         for ($i=0; $i < count($usersArray); $i++) { 
-            $user[$i] = new UserModel($usersArray[$i]['id_users'], $usersArray[$i]['role'], $usersArray[$i]['pseudo'], "hidden", $usersArray[$i]['user_index'], $usersArray[$i]['apikey']);
+            $user[$i] = new UserModel($usersArray[$i]['id_users'], $usersArray[$i]['role'], $usersArray[$i]['pseudo'], $usersArray[$i]['user_index'], $usersArray[$i]['apiKey']);
         }
 
         return $user;
@@ -34,22 +41,11 @@ class UserRepository {
 
     //-------------------------------------
 
-    public function getUser($id, $apiKey){
+    public function getUser($id){
 
-        $role = getRoleFromApiKey($apiKey);
+        $user = selectDB("USERS", "*", "id_users=".$id);
 
-        if($apiKey != null && $role > 2){
-            $user = selectDB("USERS", "*", "id_users=".$id." AND apikey='".$apiKey."'", "bool");
-        }
-        elseif ($role < 3){
-            $user = selectDB("USERS", "*", "id_users=".$id);
-        }
-
-        if ($user == false){
-            exit_with_message("Error, you can't have any information for this user, it's not you :/");
-        }
-
-        return new UserModel($user[0]['id_users'], $user[0]['role'], $user[0]['pseudo'], "hidden", $user[0]['user_index'], $user[0]['apikey']);
+        return new UserModel($user[0]['id_users'], $user[0]['role'], $user[0]['pseudo'], $user[0]['user_index'], $user[0]['apiKey']);
     }
 
     //-------------------------------------
@@ -58,55 +54,29 @@ class UserRepository {
 
         $user = selectDB("USERS", "*", "apiKey=".$api);
 
-        return new UserModel($user[0]['id_users'], $user[0]['role'], $user[0]['pseudo'], "hidden", $user[0]['user_index'], $user[0]['apikey']);
+        return new UserModel($user[0]['id_users'], $user[0]['role'], $user[0]['pseudo'], $user[0]['user_index'], $user[0]['apiKey']);
     }
 
     //-------------------------------------
     
     public function createUser(UserModel $user){
-        $tmp = insertDB("USERS", ["role", "user_index", "pseudo", "mdp", "apikey"], [$user->role, 1, $user->pseudo, strtoupper(hash('sha256', $user->password)), $user->apiKey]);// , "apiKey='".$user->apiKey."'");
-
-        $userTmp = selectDB("USERS", 'id_users, pseudo', "pseudo='".$user->pseudo."'");
-
-        $string = $userTmp[0]['id_users'].$userTmp[0]['pseudo'];
-
-        if(!updateDB("USERS", ["apikey"], [strtoupper(hash('sha256', $string))], "id_users='".$userTmp[0]['id_users']."'")){
-            exit_with_message("Impossible to create your apiKey :/");
-        }
-
-        $user = selectDB('USERS', '*', 'id_users='.$userTmp[0]['id_users']);
-
-        return new UserModel($user[0]['id_users'], $user[0]['role'], $user[0]['pseudo'], "hidden", $user[0]['user_index'], $user[0]['apikey']);//$this->getUserApi($user->apiKey);
-    }
-
-    //-------------------------------------
-
-    public function updateUser(UserModel $user, $apiKey){
+        $tmp = insertDB("USERS", ["role", "user_index", "pseudo", "apiKey"], [$user->role, 1, $user->pseudo, $user->apiKey] );// , "apiKey='".$user->apiKey."'");
         
-        $idUSer = selectDB("USERS", 'id_users', "apikey='".$apiKey."'")[0]["id_users"];
-        if ($idUSer != $user->id_users){
-            exit_with_message("You can't update an user which is not you");
-        }
-
-        updateDB("USERS", ["role", "pseudo", "user_index"], [$user->role, $user->pseudo, $user->user_index], 'id_users='.$user->id_users." AND apikey='".$apiKey."'");
-
-        return $this->getUser($user->id_users, null);
+        return selectDB('USERS', '*', 'user_index=1 ORDER BY id_users DESC LIMIT 1')[0];//$this->getUserApi($user->apiKey);
     }
 
     //-------------------------------------
 
-    public function unreferenceUser($id, $apiKey){
+    public function updateUser(UserModel $user){
+        
+        updateDB("USERS", ["role", "pseudo", "user_index"], [$user->role, $user->pseudo, $user->user_index], 'id_users='.$user->id_users);
 
-        $role = getRoleFromApiKey($apiKey);
+        return $this->getUser($user->id_users);
+    }
 
-        $apiToRole = selectDB("USERS", "id_users", "apikey='".$apiKey."'")[0]['id_users'];
-        // var_dump($apiKey, $apiToRole);
-        // exit();
+    //-------------------------------------
 
-        if ($id != $id_users && $role != 1){
-            exit_with_message("You can't unrefence a user wich is not you");
-        }
-
+    public function unreferenceUser($id){
         return updateDB("USERS", ['user_index'], [-1], "id_users=".$id);
         //deleteDB("USERS", "id_users=".$id);
     }

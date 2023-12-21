@@ -3,7 +3,6 @@
 include_once './Repository/BDD.php';
 include_once './Controller/apartmentController.php';
 include_once './Controller/userController.php';
-include_once './Controller/loginController.php';
 include_once './Controller/reservationController.php';
 
 
@@ -44,34 +43,20 @@ function exit_with_content($content = null, $code = 200) {
     exit();
 }
 
-function getRoleFromApiKey($apiKey){
-    $role = selectDB("USERS", 'role', "apikey='".$apiKey."'")[0]["role"];
-    return $role;
-}
-
 
 // Composant principal du controlleur: cette fonction agit comme un routeur en redirigeant les requêtes vers le bon controlleur
 function controller($uri) {
-    $headers = getallheaders();
-    $apiKey = $headers['apikey'];
-    $role = getRoleFromApiKey($apiKey);
-    
-
     switch($uri[2]) {
-        case 'login':
-            loginController($uri);
-            break;
-
         case 'user':
-            userController($uri, $apiKey);
+            userController($uri);
             break;
 
         case 'apartment':
-            apartmentController($uri, $apiKey);
+            apartmentController($uri);
             break;
 
         case 'reservation':
-            reservationController($uri, $apiKey);
+            reservationController($uri);
             break;
 
         default:

@@ -42,7 +42,7 @@ function checkData($table = -10, $columnArray = -10, $columnData = -10, $conditi
 function connectDB(){
 	try {
 	    $db = new PDO(
-	        'pgsql:host=restpastropapi2-database-1;
+	        'pgsql:host=restpastropapi-database-1;
 	        port=5432;
 	        dbname=apiDev_db;
 	        user=apiDev;
@@ -237,6 +237,7 @@ function updateDB($table, $columnArray, $columnData, $condition = null)
 	else{
 		$dbRequest = 'UPDATE '. $table .' SET ' . $updatedData .'  WHERE ' . $condition ;
 	}
+
 	try{
 		$result = $db->prepare($dbRequest);
 		$result->execute();
@@ -244,8 +245,8 @@ function updateDB($table, $columnArray, $columnData, $condition = null)
 		return true;
 	}
 	catch (PDOException $e)
-	{	
-
+	{
+		//exit();
 		if (checkMsg($e->getMessage(), $wordToSearch = "Undefined column"))
 		{
 			$tmp = explode("does not exist", explode(":", $e->getMessage())[3])[0] . "does not exist";

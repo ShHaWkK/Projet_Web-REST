@@ -35,9 +35,9 @@ class ApartmentService {
 
 
     //Met à jour un appartement
-    public function updateApartment($id_apartement, $place, $address, $complement_address, $availability, $price_night, $area, $apikey) {
+    public function updateApartment($id_apartement, $place, $address, $complement_address, $availability, $price_night, $area) {
         $apartmentRepository = new ApartmentRepository();
-        if ($apartmentRepository->updateApartment($id_apartement, ["place", "address", "complement_address", "availability", "price_night", "area"], [$place, $address, $complement_address, $availability, $price_night, $area], $apikey))
+        if ($apartmentRepository->updateApartment($id_apartement, ["place", "address", "complement_address", "availability", "price_night", "area"], [$place, $address, $complement_address, $availability, $price_night, $area]))
         {
             return $apartmentRepository->getApartment($id_apartement);
         }
@@ -46,7 +46,7 @@ class ApartmentService {
 
     
   	// Met à jour la disponibilte d'un appartement
-    public function updateApartmentAvail($id_apartement, $availability, $apikey) {
+    public function updateApartmentAvail($id_apartement, $availability) {
         // Validation
         if ($availability != true && $availability != false)
         {
@@ -54,17 +54,16 @@ class ApartmentService {
         }
         $apartmentRepository = new ApartmentRepository();
 
-        $apartmentRepository->updateApartment($id_apartement, ["availability"], [$availability], $apikey);
-
+        $apartmentRepository->updateApartment($id_apartement, ["availability"], [$availability]);
         return $apartmentRepository->getApartment($id_apartement);
     }
     
 
 
     //Supprime un appartement
-    public function deleteApartment($id_apartement, $apikey) {
+    public function deleteApartment($id_apartement) {
         $apartmentRepository = new ApartmentRepository();
-        $apartmentRepository->unreferenceApartment($id_apartement, $apikey);
+        $apartmentRepository->unreferenceApartment($id_apartement);
         return;
     }
 

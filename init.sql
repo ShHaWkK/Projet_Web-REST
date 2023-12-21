@@ -3,7 +3,7 @@ CREATE TABLE USERS(
    role INT NOT NULL,
    pseudo VARCHAR(50) NOT NULL UNIQUE,
    user_index INT NOT NULL DEFAULT 1,
-   apiKey VARCHAR(250),
+   apikey VARCHAR(250),
    mdp VARCHAR(250) NOT NULL
 );
 

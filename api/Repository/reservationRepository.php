@@ -8,7 +8,14 @@ class ReservationRepository {
 
     // I'm not sure about this function lol (unuse)
     function __construct() {
-
+        try {
+            $this->connection = pg_connect("host=restpastropapi-database-1 port=5432 dbname=apiDev_db user=apiDev password=password");
+            if (  $this->connection == null ) {
+                throw new BDDException("Could not connect to database.");
+            }
+        } catch (Exception $e) {
+            throw new BDDException("Could not connect db: ". $e->getMessage());
+        }
     }
     
     //-------------------------------------
