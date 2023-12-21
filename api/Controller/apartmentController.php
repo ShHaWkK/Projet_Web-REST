@@ -24,7 +24,7 @@ function apartmentController($uri, $apikey) {
                 exit_with_content($apartementService->getApartmentById($uri[3]));
             }
             else{
-                exit_with_content($apartementService->getAllApartments());
+                exit_with_content($apartementService->getAllApartments($apikey));
             }
             
             break;

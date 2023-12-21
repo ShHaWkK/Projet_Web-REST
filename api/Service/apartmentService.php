@@ -12,9 +12,9 @@ class ApartmentService {
     }
 
     //Récupère tous les appartements
-    public function getAllApartments() {
+    public function getAllApartments($apikey = null) {
         $apartmentRepository = new ApartmentRepository();
-        return $apartmentRepository->getApartments();
+        return $apartmentRepository->getApartments($apikey);
     }
 
     //Récupère un appartement par son id

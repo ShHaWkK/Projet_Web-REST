@@ -12,8 +12,22 @@ class ApartmentRepository {
     }
     //-------------------------------------
 
-    public function getApartments(){
-        $apartArray = selectDB("APARTMENT", "*", "apartment_index=1");
+    public function getApartments($apikey = null){
+
+        $apartArray = [];
+
+        if($apikey != null){
+            $role = getRoleFromApiKey($apikey);
+            $id_user = selectDB("USERS", "id_users", "apikey='".$apikey."'")[0]["id_users"];
+        }
+
+        if ($apikey == null || $role !=3){
+            $apartArray = selectDB("APARTMENT", "*", "apartment_index=1");
+        }
+        // Select all his apart
+        elseif($role == 3){
+            $apartArray = selectDB("APARTMENT", "*", "apartment_index=1 AND id_users=".$id_user);
+        }
 
         $apart = [];
         $apartTest = [];
