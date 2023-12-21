@@ -49,7 +49,10 @@ class UserRepository {
             exit_with_message("Error, you can't have any information for this user, it's not you :/");
         }
 
-        return new UserModel($user[0]['id_users'], $user[0]['role'], $user[0]['pseudo'], "hidden", $user[0]['user_index'], $user[0]['apikey']);
+        if($role < 2){
+            return new UserModel($user[0]['id_users'], $user[0]['role'], $user[0]['pseudo'], "hidden", $user[0]['user_index'], $user[0]['apikey']);    
+        }
+        return new UserModel($user[0]['id_users'], $user[0]['role'], $user[0]['pseudo'], "hidden", $user[0]['user_index'], "hidden");
     }
 
     //-------------------------------------
