@@ -45,7 +45,10 @@ function exit_with_content($content = null, $code = 200) {
 }
 
 function getRoleFromApiKey($apiKey){
-    $role = selectDB("USERS", 'role', "apikey='".$apiKey."'")[0]["role"];
+    $role = selectDB("USERS", 'role', "apikey='".$apiKey."'", "bool");
+    if($role){
+        $role = selectDB("USERS", 'role', "apikey='".$apiKey."'")[0]["role"];
+    }
     return $role;
 }
 
@@ -63,14 +66,23 @@ function controller($uri) {
             break;
 
         case 'user':
+            if ($role == true){
+                exit_with_message("You need to have an apikey");
+            }
             userController($uri, $apiKey);
             break;
 
         case 'apartment':
+            if ($role == true){
+                exit_with_message("You need to have an apikey");
+            }
             apartmentController($uri, $apiKey);
             break;
 
         case 'reservation':
+            if ($role == true){
+                exit_with_message("You need to have an apikey");
+            }
             reservationController($uri, $apiKey);
             break;
 
