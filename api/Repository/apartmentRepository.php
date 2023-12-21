@@ -28,7 +28,7 @@ class ApartmentRepository {
     public function getApartment($id){
 
         if(selectDB("APARTMENT", "*", "id_apartement=".$id." AND apartment_index=1", "bool")){
-            $apart = selectDB("APARTMENT", "*", "id_apartement=".$id." AND apartment_index=1", "-@");
+            $apart = selectDB("APARTMENT", "*", "id_apartement=".$id." AND apartment_index=1");
         }
         else{
             exit_with_message("The apart is unreferenced");

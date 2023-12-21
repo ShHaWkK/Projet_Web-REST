@@ -61,7 +61,7 @@ function apartmentController($uri, $apikey) {
             }
 
             try{
-                exit_with_content($apartementService->updateApartment($uri[3], $data['place'], $data['address'], $data['complement_address'], $data['availability'], $data['price_night'], $data['area']));
+                exit_with_content($apartementService->updateApartment($uri[3], $data['place'], $data['address'], $data['complement_address'], $data['availability'], $data['price_night'], $data['area'], $apikey));
             }
             catch(err){
                 exit_with_message("Plz give at least the 6 args : place, address, complement_address, availability, price_night, area");

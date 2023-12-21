@@ -35,9 +35,9 @@ class ApartmentService {
 
 
     //Met à jour un appartement
-    public function updateApartment($id_apartement, $place, $address, $complement_address, $availability, $price_night, $area) {
+    public function updateApartment($id_apartement, $place, $address, $complement_address, $availability, $price_night, $area, $apikey) {
         $apartmentRepository = new ApartmentRepository();
-        if ($apartmentRepository->updateApartment($id_apartement, ["place", "address", "complement_address", "availability", "price_night", "area"], [$place, $address, $complement_address, $availability, $price_night, $area]))
+        if ($apartmentRepository->updateApartment($id_apartement, ["place", "address", "complement_address", "availability", "price_night", "area"], [$place, $address, $complement_address, $availability, $price_night, $area], $apikey))
         {
             return $apartmentRepository->getApartment($id_apartement);
         }
