@@ -5,6 +5,8 @@ Création d'une API
 - Alexandre Uzan        (ShHaWkK)
 - Marc Lecomte          (Spatulox)
 
+# IL FAUT PRENDRE LA BRANCHE MAIN 2 POUR QUE CA FONCTIONNE
+
 ### Sujet :
 Création d'une API de gestion d'appartements
 
