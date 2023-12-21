@@ -2,11 +2,20 @@
 <?php
 include_once './Service/apartmentService.php';
 
-function apartmentController($uri) {
+function apartmentController($uri, $apikey) {
     $apartementService = new ApartmentService($uri);
+    
+    if ($apikey == null && $_SERVER['REQUEST_METHOD'] != 'GET'){
+        exit_with_message("You need to be connected to create, update or delete an apartment");
+    }
+
+    $role = getRoleFromApiKey($apikey);
+
+    if ($role > 3 && $_SERVER['REQUEST_METHOD'] != 'GET'){
+        exit_with_message("You need to be have an owner / moderator or admin account to create, update or delete an apartment");
+    }   
 
     switch($_SERVER['REQUEST_METHOD']) {
-
 
         // Retrieve apartments
         case 'GET':
@@ -52,7 +61,7 @@ function apartmentController($uri) {
             }
 
             try{
-                exit_with_content($apartementService->updateApartment($uri[3], $data['place'], $data['address'], $data['complement_address'], $data['availability'], $data['price_night'], $data['area']));
+                exit_with_content($apartementService->updateApartment($uri[3], $data['place'], $data['address'], $data['complement_address'], $data['availability'], $data['price_night'], $data['area'], $apikey));
             }
             catch(err){
                 exit_with_message("Plz give at least the 6 args : place, address, complement_address, availability, price_night, area");
@@ -71,14 +80,14 @@ function apartmentController($uri) {
                 exit_with_message("Plz give the availability of the apartment (boolean)");
             }
 
-            exit_with_content($apartementService->updateApartmentAvail($uri[3], $data["availability"]));
+            exit_with_content($apartementService->updateApartmentAvail($uri[3], $data["availability"], $apikey));
             break;
 
 
         // Delete the apartment
         case 'DELETE':
             if($uri[3]){
-                exit_with_content($apartementService->deleteApartment($uri[3]));
+                exit_with_content($apartementService->deleteApartment($uri[3], $apikey));
             }
             else{
                 exit_with_message("ERROR : Plz specifie the id of the apartment you want to delete.");

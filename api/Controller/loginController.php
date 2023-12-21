@@ -4,12 +4,12 @@ include_once './exceptions.php';
 
 
 
-function userController($uri) {
+function loginController($uri) {
     
     switch ($_SERVER['REQUEST_METHOD']) {
         case 'GET':
 
-            $loginClass = new LoginService();
+            $loginClass = new LoginService($uri);
             $body = file_get_contents("php://input");
             $json = json_decode($body, true);
 
